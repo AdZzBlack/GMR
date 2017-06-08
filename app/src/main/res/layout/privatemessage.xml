@@ -13,6 +13,67 @@
         android:layout_height="wrap_content"
         android:id="@+id/privatemessage_container">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorWhite"
+            android:layout_below="@+id/privatemessage_selecteditem"
+            android:layout_above="@+id/privatemessage_menu"
+            android:layout_alignParentBottom="true">
+
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/lv_messsage"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="?android:attr/actionBarSize"
+                android:clickable="true"
+                android:divider="@null"
+                android:dividerHeight="0dp"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/privatemessage_previewmedia"
+            android:background="@android:color/darker_gray"
+            android:layout_below="@+id/privatemessage_selecteditem"
+            android:layout_above="@+id/privatemessage_menu"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/iv_previewphoto"
+                android:scaleType="centerInside"
+                android:layout_centerInParent="true"
+                android:src="@drawable/selectphoto"
+                android:visibility="gone"/>
+            <ImageView
+                android:layout_width="350dp"
+                android:layout_height="350dp"
+                android:id="@+id/iv_previewvideo"
+                android:layout_centerInParent="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/selectvideo"
+                android:visibility="gone"/>
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:id="@+id/iv_previewvideo_icontrans"
+                android:scaleType="centerInside"
+                android:src="@drawable/selectvideo"
+                android:alpha="0.6"
+                android:layout_centerInParent="true"
+                android:focusable="false"
+                android:clickable="false"
+                android:focusableInTouchMode="false"
+                android:visibility="gone"/>
+        </RelativeLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -60,27 +121,6 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/privatemessagelist_container"
-            android:background="@color/colorWhite"
-            android:layout_below="@+id/privatemessage_selecteditem">
-
-            <ListView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/lv_messsage"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginBottom="?android:attr/actionBarSize"
-                android:clickable="true"
-                android:divider="@null"
-                android:dividerHeight="0dp"/>
-        </RelativeLayout>
-
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:id="@+id/privatemessage_menu">
 
             <LinearLayout
@@ -109,13 +149,20 @@
                     android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:id="@+id/et_newmessage"
-                    android:padding="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:gravity="center_vertical"
                     android:hint="your message ..."
                     android:textColor="@color/colorPrimaryDark"
                     android:layout_gravity="bottom"
                     android:layout_alignParentBottom="true"
                     android:layout_toRightOf="@+id/btn_othermenumessage"
-                    android:background="@android:color/white"/>
+                    android:background="@android:color/white"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:lines="3"
+                    android:scrollbars="vertical"/>
 
                 <ImageButton
                     android:layout_width="60dp"
@@ -157,16 +204,15 @@
                         android:paddingLeft="12dp"
                         android:paddingRight="12dp"
                         android:paddingBottom="3dp"
-                        android:id="@+id/ib_selectphoto"
                         android:layout_gravity="bottom"
                         android:layout_alignParentRight="true"
                         android:background="@android:drawable/screen_background_dark_transparent"
-                        android:layout_above="@+id/textView_selectphoto" />
+                        android:layout_above="@+id/tv_selectphoto" />
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="20dp"
                         android:layout_alignParentBottom="true"
-                        android:id="@+id/textView_selectphoto"
+                        android:id="@+id/tv_selectphoto"
                         android:text="Select Photo"
                         android:textAlignment="center"
                         android:paddingBottom="3dp"
@@ -189,16 +235,15 @@
                         android:paddingLeft="12dp"
                         android:paddingRight="12dp"
                         android:paddingBottom="3dp"
-                        android:id="@+id/ib_takephoto"
                         android:layout_gravity="bottom"
                         android:layout_alignParentRight="true"
                         android:background="@android:drawable/screen_background_dark_transparent"
-                        android:layout_above="@+id/textView_takephoto"/>
+                        android:layout_above="@+id/tv_takephoto"/>
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="20dp"
                         android:layout_alignParentBottom="true"
-                        android:id="@+id/textView_takephoto"
+                        android:id="@+id/tv_takephoto"
                         android:text="Take Photo"
                         android:textAlignment="center"
                         android:paddingBottom="3dp"
@@ -221,16 +266,15 @@
                         android:paddingLeft="12dp"
                         android:paddingRight="12dp"
                         android:paddingBottom="3dp"
-                        android:id="@+id/ib_selectvideo"
                         android:layout_gravity="bottom"
                         android:layout_alignParentRight="true"
                         android:background="@android:drawable/screen_background_dark_transparent"
-                        android:layout_above="@+id/textView_selectvideo"/>
+                        android:layout_above="@+id/tv_selectvideo"/>
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="20dp"
                         android:layout_alignParentBottom="true"
-                        android:id="@+id/textView_selectvideo"
+                        android:id="@+id/tv_selectvideo"
                         android:text="Select Video"
                         android:textAlignment="center"
                         android:paddingBottom="3dp"
@@ -253,16 +297,15 @@
                         android:paddingLeft="12dp"
                         android:paddingRight="12dp"
                         android:paddingBottom="3dp"
-                        android:id="@+id/ib_takevideo"
                         android:layout_gravity="bottom"
                         android:layout_alignParentRight="true"
                         android:background="@android:drawable/screen_background_dark_transparent"
-                        android:layout_above="@+id/textView_takevideo"/>
+                        android:layout_above="@+id/tv_takevideo"/>
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="20dp"
                         android:layout_alignParentBottom="true"
-                        android:id="@+id/textView_takevideo"
+                        android:id="@+id/tv_takevideo"
                         android:text="Take Video"
                         android:textAlignment="center"
                         android:paddingBottom="3dp"
