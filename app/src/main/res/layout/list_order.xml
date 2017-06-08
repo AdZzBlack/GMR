@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="[ Nama ]"
+        android:id="@+id/tv_nama"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_margin="15dp"
+        android:layout_alignParentLeft="true"
+        android:layout_toStartOf="@+id/tv_keterangan"
+        android:layout_toLeftOf="@+id/tv_keterangan" />
+
+    <TextView
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="[ Ket ]"
+        android:id="@+id/tv_keterangan"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_margin="15dp"
+        android:layout_alignParentRight="true"/>
+</RelativeLayout>

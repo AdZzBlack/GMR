@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="?android:attr/actionBarSize"
+    tools:context=".Index">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/choose_container"
+        android:background="@color/colorWhite">
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/lv_choose"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="50dp"/>
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/tl_footer">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Disapprove All"
+                    android:id="@+id/btn_disapprove"
+                    android:background="@drawable/btnstyle_bottom"
+                    android:textColor="@color/colorWhite"
+                    android:layout_weight="1"
+                    android:layout_margin="0dp"
+                    android:textSize="12dp"/>
+
+                <Button
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Approve Selected"
+                    android:id="@+id/btn_approve_selected"
+                    android:background="@drawable/btnstyle_bottom"
+                    android:textColor="@color/colorWhite"
+                    android:layout_weight="1"
+                    android:layout_margin="0dp"
+                    android:textSize="12dp"/>
+
+                <Button
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Approve All"
+                    android:id="@+id/btn_approve"
+                    android:background="@drawable/btnstyle_bottom"
+                    android:textColor="@color/colorWhite"
+                    android:layout_weight="1"
+                    android:layout_margin="0dp"
+                    android:textSize="12dp"/>
+            </TableRow>
+        </TableLayout>
+    </RelativeLayout>
+</FrameLayout>

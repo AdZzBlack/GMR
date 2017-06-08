@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="?android:attr/actionBarSize"
+    tools:context=".Index">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/index_container"
+        android:background="@color/colorWhite">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:isScrollContainer="true"
+            android:scrollbarStyle="insideOverlay"
+            android:scrollbars="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:id="@+id/ll_1"
+                    android:orientation="horizontal" >
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_weight=".495"
+                        android:layout_height="match_parent"
+                        android:id="@+id/rl_beritaacara"
+                        android:clickable="true">
+
+                        <ImageButton
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:id="@+id/ib_beritaacara"
+                            android:src="@drawable/elevasi"
+                            android:scaleType="fitCenter"
+                            android:background="@null"
+                            android:padding="30dp"
+                            android:elevation="10dp"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/ib_beritaacara"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Berita Acara Elevasi"
+                            android:textColor="@color/colorGray"
+                            android:textAlignment="center"
+                            android:textSize="14dp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="-15dp"/>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_weight=".495"
+                        android:layout_height="match_parent"
+                        android:id="@+id/rl_unavaiable1"
+                        android:clickable="true"
+                        android:visibility="gone">
+
+                        <ImageButton
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/unavaiable"
+                            android:scaleType="fitCenter"
+                            android:background="@null"
+                            android:padding="35dp"
+                            android:elevation="10dp"/>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_weight=".01"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorLine">
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_weight=".495"
+                        android:layout_height="match_parent"
+                        android:id="@+id/rl_delivery"
+                        android:clickable="true">
+
+                        <ImageButton
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:id="@+id/ib_deliveryorder"
+                            android:src="@drawable/delivery"
+                            android:scaleType="fitCenter"
+                            android:background="@null"
+                            android:padding="30dp"
+                            android:elevation="10dp"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/ib_deliveryorder"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Delivery Order"
+                            android:textColor="@color/colorGray"
+                            android:textAlignment="center"
+                            android:textSize="14dp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="-15dp"/>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_weight=".495"
+                        android:layout_height="match_parent"
+                        android:id="@+id/rl_unavaiable2"
+                        android:clickable="true"
+                        android:visibility="gone">
+
+                        <ImageButton
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/unavaiable"
+                            android:scaleType="fitCenter"
+                            android:background="@null"
+                            android:padding="35dp"
+                            android:elevation="10dp"/>
+
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="8dp"
+                    android:id="@+id/ll_2"
+                    android:layout_below="@id/ll_1"
+                    android:orientation="horizontal"
+                    android:background="@color/colorWhite">
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:id="@+id/ll_3"
+                    android:layout_below="@id/ll_2"
+                    android:orientation="horizontal" >
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_weight=".495"
+                        android:layout_height="match_parent"
+                        android:id="@+id/rl_bpm"
+                        android:clickable="true">
+
+                        <ImageButton
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:id="@+id/ib_bpm"
+                            android:src="@drawable/bpm"
+                            android:scaleType="fitCenter"
+                            android:background="@null"
+                            android:padding="30dp"
+                            android:elevation="10dp"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/ib_bpm"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="BPM"
+                            android:textColor="@color/colorGray"
+                            android:textAlignment="center"
+                            android:textSize="14dp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="-15dp"/>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_weight=".495"
+                        android:layout_height="match_parent"
+                        android:id="@+id/rl_unavaiable3"
+                        android:clickable="true"
+                        android:visibility="gone">
+
+                        <ImageButton
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/unavaiable"
+                            android:scaleType="fitCenter"
+                            android:background="@null"
+                            android:padding="35dp"
+                            android:elevation="10dp"/>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_weight=".01"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorLine">
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_weight=".495"
+                        android:layout_height="match_parent"
+                        android:id="@+id/rl_opname"
+                        android:clickable="true">
+
+                        <ImageButton
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:id="@+id/ib_opname"
+                            android:src="@drawable/opname"
+                            android:scaleType="fitCenter"
+                            android:background="@null"
+                            android:padding="30dp"
+                            android:elevation="10dp"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/ib_opname"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Opname"
+                            android:textColor="@color/colorGray"
+                            android:textAlignment="center"
+                            android:textSize="14dp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="-15dp"/>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_weight=".495"
+                        android:layout_height="match_parent"
+                        android:id="@+id/rl_unavaiable4"
+                        android:clickable="true"
+                        android:visibility="gone">
+
+                        <ImageButton
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/unavaiable"
+                            android:scaleType="fitCenter"
+                            android:background="@null"
+                            android:padding="35dp"
+                            android:elevation="10dp"/>
+
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="8dp"
+                    android:id="@+id/ll_4"
+                    android:layout_below="@id/ll_3"
+                    android:orientation="horizontal"
+                    android:background="@color/colorWhite">
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:id="@+id/ll_5"
+                    android:layout_below="@id/ll_4"
+                    android:orientation="horizontal" >
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_weight=".495"
+                        android:layout_height="match_parent"
+                        android:id="@+id/rl_pasang"
+                        android:clickable="true">
+
+                        <ImageButton
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:id="@+id/ib_pasang"
+                            android:src="@drawable/pasangnomor"
+                            android:scaleType="fitCenter"
+                            android:background="@null"
+                            android:padding="30dp"
+                            android:elevation="10dp"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/ib_pasang"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Bukti Acara Pemasangan Sesuai Nomor"
+                            android:textColor="@color/colorGray"
+                            android:textAlignment="center"
+                            android:textSize="14dp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="-15dp"/>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_weight=".01"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorLine">
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_weight=".495"
+                        android:layout_height="match_parent"
+                        android:id="@+id/rl_serahterima"
+                        android:clickable="true">
+
+                        <ImageButton
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:id="@+id/ib_serahterima"
+                            android:src="@drawable/serahterima"
+                            android:scaleType="fitCenter"
+                            android:background="@null"
+                            android:padding="30dp"
+                            android:elevation="10dp"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/ib_serahterima"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Berita Acara Serah Terima"
+                            android:textColor="@color/colorGray"
+                            android:textAlignment="center"
+                            android:textSize="14dp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="-15dp"/>
+                    </RelativeLayout>
+                </LinearLayout>
+            </RelativeLayout>
+        </ScrollView>
+    </RelativeLayout>
+</FrameLayout>

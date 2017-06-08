@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Index"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:focusable="false"
+    android:clickable="false"
+    android:focusableInTouchMode="false"
+    android:descendantFocusability="blocksDescendants"
+    android:id="@+id/privatemessage_listitem">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/privatemessage_date"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_datemessage"
+            android:text="[ date ]"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:background="@drawable/roundcorner"
+            android:textColor="@android:color/white"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="5dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:paddingRight="6dp"
+            android:paddingLeft="6dp"
+            android:visibility="gone"
+            android:focusable="false"
+            android:clickable="false"
+            android:focusableInTouchMode="false"
+            android:descendantFocusability="blocksDescendants"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/lv_backcontentmessage"
+        android:layout_below="@+id/privatemessage_date"
+        android:background="@android:color/transparent"
+        android:focusable="false"
+        android:clickable="false"
+        android:focusableInTouchMode="false"
+        android:descendantFocusability="blocksDescendants">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/lv_contentmessage"
+            android:background="@drawable/out_message"
+            android:layout_margin="5dp"
+            android:focusable="false"
+            android:clickable="false"
+            android:focusableInTouchMode="false"
+            android:descendantFocusability="blocksDescendants">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/privatemessage_content"
+                android:focusable="false"
+                android:clickable="false"
+                android:focusableInTouchMode="false"
+                android:descendantFocusability="blocksDescendants">
+
+                <ImageView
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:id="@+id/iv_photomessage"
+                    android:layout_margin="10dp"
+                    android:layout_below="@+id/tv_nama"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/selectphoto_black"
+                    android:visibility="gone"
+                    android:layout_alignParentLeft="true"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:focusableInTouchMode="false"/>
+
+                <ImageView
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:id="@+id/iv_videomessage"
+                    android:layout_margin="10dp"
+                    android:layout_below="@+id/tv_nama"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/selectvideo_black"
+                    android:visibility="gone"
+                    android:layout_alignParentLeft="true"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:focusableInTouchMode="false"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="17dp"
+                    android:text="[ Message ]"
+                    android:id="@+id/tv_message"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_below="@+id/iv_photomessage"
+
+                    android:layout_alignParentLeft="true"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:focusableInTouchMode="false"/>
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/iv_videomessage_icontrans"
+                android:layout_below="@+id/tv_nama"
+                android:scaleType="centerInside"
+                android:src="@drawable/selectvideo"
+                android:layout_centerInParent="true"
+                android:alpha="0.6"
+                android:layout_marginLeft="60dp"
+                android:layout_alignParentLeft="true"
+                android:visibility="gone"
+                android:focusable="false"
+                android:clickable="false"
+                android:focusableInTouchMode="false"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/privatemessage_desc"
+            android:orientation="vertical"
+            android:focusable="false"
+            android:clickable="false"
+            android:focusableInTouchMode="false"
+            android:descendantFocusability="blocksDescendants"
+            android:layout_toStartOf="@+id/lv_contentmessage"
+            android:layout_toLeftOf="@+id/lv_contentmessage"
+            android:layout_alignBottom="@+id/lv_contentmessage"
+            android:gravity="right">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="8dp"
+                android:text="[ Read ]"
+                android:id="@+id/tv_messageread"
+                android:textColor="@android:color/holo_red_light"
+                android:visibility="gone"
+                android:focusable="false"
+                android:clickable="false"
+                android:focusableInTouchMode="false" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="8dp"
+                android:text="[ Time ]"
+                android:id="@+id/tv_timemessageout"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_marginTop="2dp"
+                android:focusable="false"
+                android:clickable="false"
+                android:focusableInTouchMode="false" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="8dp"
+            android:text="[ Time ]"
+            android:id="@+id/tv_timemessagein"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_marginTop="2dp"
+            android:focusable="false"
+            android:clickable="false"
+            android:focusableInTouchMode="false"
+            android:layout_toEndOf="@+id/lv_contentmessage"
+            android:layout_toRightOf="@+id/lv_contentmessage"
+            android:layout_alignBottom="@+id/lv_contentmessage"/>
+
+    </RelativeLayout>
+</RelativeLayout>

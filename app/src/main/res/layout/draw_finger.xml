@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_marginTop="?android:attr/actionBarSize"
+    android:layout_height="match_parent"
+    android:id="@+id/main">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/tl_footer">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Clear"
+                    android:id="@+id/btn_clear"
+                    android:background="@drawable/btnstyle_bottom"
+                    android:textColor="@color/colorWhite"
+                    android:layout_weight="1"
+                    android:layout_margin="0dp"
+                    android:textSize="12dp"/>
+
+                <Button
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Create Image"
+                    android:id="@+id/btn_create"
+                    android:background="@drawable/btnstyle_bottom"
+                    android:textColor="@color/colorWhite"
+                    android:layout_weight="1"
+                    android:layout_margin="0dp"
+                    android:textSize="12dp"/>
+            </TableRow>
+        </TableLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_above="@+id/tl_footer"
+        android:id="@+id/tl_footer1">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/iv1"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/tl_footer1"
+        android:id="@+id/tes">
+    </RelativeLayout>
+</RelativeLayout>

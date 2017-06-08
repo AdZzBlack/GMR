@@ -1,0 +1,35 @@
+{
+  "project_info": {
+    "project_number": "602412022493",
+    "project_id": "gmr-android"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:602412022493:android:7b2d5f4d4805ff9b",
+        "android_client_info": {
+          "package_name": "com.adzzblack.gmr"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGSGOC-pqKzk-eRtf2aHQtI4ifCYeIONE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
