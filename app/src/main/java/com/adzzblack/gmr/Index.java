@@ -114,6 +114,16 @@ public class Index extends AppCompatActivity implements NavigationView.OnNavigat
             navmenu.findItem(R.id.nav_delivery_order).setVisible(false);
         }
 
+        if(Index.globalfunction.getShared("user", "role_notabeli", "0").equals("0"))
+        {
+            navmenu.findItem(R.id.nav_opname).setVisible(false);
+        }
+
+        if(Index.globalfunction.getShared("user", "role_map", "0").equals("0"))
+        {
+            navmenu.findItem(R.id.nav_map).setVisible(false);
+        }
+
         privateMessage.setGravity(Gravity.CENTER_VERTICAL);
         privateMessage.setTypeface(null, Typeface.BOLD);
         privateMessage.setTextColor(getResources().getColor(R.color.colorPrimary));
@@ -160,6 +170,27 @@ public class Index extends AppCompatActivity implements NavigationView.OnNavigat
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
+            else if(menuFragment.equals("ChooseApprovalDelivery")){
+                fragment = new ChooseApprovalDelivery();
+                transaction = this.getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+            else if(menuFragment.equals("DeliveryOrderApproved")){
+                fragment = new ChoosePrintDelivery();
+                transaction = this.getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+            else if(menuFragment.equals("DeliveryOrderDisapproved")){
+                fragment = new ChooseEditDelivery();
+                transaction = this.getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
         }
 
         navigationView.setNavigationItemSelectedListener(this);
@@ -193,19 +224,12 @@ public class Index extends AppCompatActivity implements NavigationView.OnNavigat
             transaction.addToBackStack("dashboard");
             transaction.commit();
         }
-        else if (id == R.id.nav_testmap) {
+        else if (id == R.id.nav_map) {
             Index.globalfunction.setShared("bangunan", "header", "0");
             Index.globalfunction.setShared("bangunan", "before", "");
             Index.globalfunction.setShared("global", "destination", "map");
 
             Fragment fragment = new ChooseBangunan();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, fragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
-        }
-        else if (id == R.id.nav_testdraw) {
-            Fragment fragment = new DrawFinger();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);

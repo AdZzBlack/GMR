@@ -11,13 +11,13 @@
             android:icon="@drawable/dashboard"
             android:title="Dashboard" />
         <item
-            android:id="@+id/nav_testmap"
+            android:id="@+id/nav_map"
             android:icon="@drawable/dashboard"
-            android:title="Test Map" />
-        <item
-            android:id="@+id/nav_testdraw"
-            android:icon="@drawable/dashboard"
-            android:title="Test Draw" />
+            android:title="Map" />
+        <!--<item-->
+            <!--android:id="@+id/nav_testdraw"-->
+            <!--android:icon="@drawable/dashboard"-->
+            <!--android:title="Test Draw" />-->
         <item
             android:id="@+id/nav_opname"
             android:icon="@drawable/elevasi"
