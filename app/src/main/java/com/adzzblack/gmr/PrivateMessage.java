@@ -18,10 +18,12 @@ import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -51,8 +53,12 @@ import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
+
+import static android.content.Context.WINDOW_SERVICE;
 
 /**
  * Created by owners on 17/04/2017.
@@ -67,7 +73,7 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
     private PrivateMessageListAdapter messageadapter;
     private LinearLayout rowothermenu, rowselecteditem;
     private RelativeLayout btn_selectphoto, btn_takephoto, btn_selectvideo, btn_takevideo, rowpreviewmedia;
-    private ImageView iv_cancelselection, iv_copyselection, iv_deleteselection, iv_previewphoto, iv_previewvideo, iv_previewvideo_icontrans;
+    private ImageView iv_cancelselection, iv_copyselection, iv_deleteselection, iv_replyselection, iv_previewphoto, iv_previewvideo, iv_previewvideo_icontrans;
     private TextView tv_countselection;
 
     private boolean scroll = false;
@@ -79,6 +85,7 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
     private Boolean copymode = false;
     private Boolean deletemedia = false;
     private String previewmedia = "";
+    private String replymode = "";
 
     private ArrayList<String> selectedlist = new ArrayList<String>();
     private ArrayList<String> contentselectedlist = new ArrayList<String>();
@@ -122,6 +129,8 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
         iv_copyselection.setOnClickListener(this);
         iv_deleteselection = (ImageView) v.findViewById(R.id.iv_deleteselection);
         iv_deleteselection.setOnClickListener(this);
+        iv_replyselection = (ImageView) v.findViewById(R.id.iv_replyselection);
+        iv_replyselection.setOnClickListener(this);
         tv_countselection = (TextView) v.findViewById(R.id.tv_countselection);
         rowselecteditem = (LinearLayout) v.findViewById(R.id.privatemessage_selecteditem);
         rowpreviewmedia = (RelativeLayout) v.findViewById(R.id.privatemessage_previewmedia);
@@ -215,43 +224,12 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
     }
 
     private void clickCopyText(String tipe, String nomor, int position, String message){
-        if(tipe.equals("1")){
+        if(tipe.equals("1") || tipe.equals("4")){
             if(selectedlist.contains(nomor)){
                 int index = selectedlist.indexOf(nomor);
                 selectedlist.remove(index);
-                contentselectedlist.remove(index);
-                if(String.valueOf(selectedlist.size()).equals("0")){
-                    iv_cancelselection.performClick();
-                }else if(selectedlist.size() > 0) {
-                    rowselecteditem.setVisibility(View.VISIBLE);
-                    iv_copyselection.setVisibility(View.VISIBLE);
-                    tv_countselection.setText(String.valueOf(selectedlist.size()));
-                }
-            }else {
-                selectedlist.add(nomor);
-                String tv_nama = messageadapter.items.get(position).getNama();
-                if(tv_nama.equals("You")){
-                    tv_nama = Index.globalfunction.getShared("user", "username", "");
-                    tv_nama = tv_nama.substring(0, 1).toUpperCase() + tv_nama.substring(1);
-                }
-                String tv_date = messageadapter.items.get(position).getTime();
-                try{
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    Date newdate = sdf.parse(tv_date);
-                    tv_date = sdf.format(newdate);
-
-                    SimpleDateFormat datetimeformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-                    newdate = sdf.parse(tv_date);
-                    tv_date = datetimeformat.format(newdate);
-                }catch(Exception e) { e.printStackTrace(); }
-                contentselectedlist.add("[" + tv_date + "] " + tv_nama + ": " + message);
-                if(selectedlist.size() > 0){
-                    rowselecteditem.setVisibility(View.VISIBLE);
-                    iv_copyselection.setVisibility(View.VISIBLE);
-                    tv_countselection.setText(String.valueOf(selectedlist.size()));
-                }
-            }
-            messageadapter.notifyDataSetChanged();
+            }else { selectedlist.add(nomor); }
+            setSelectedMessage();
         }
     }
 
@@ -261,31 +239,33 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
                 int index = selectedlist.indexOf(nomor);
                 selectedlist.remove(index);
                 contentselectedlist.remove(index);
-                if(String.valueOf(selectedlist.size()).equals("0")){
-                    iv_cancelselection.performClick();
-                }else if(selectedlist.size() > 0) {
-                    rowselecteditem.setVisibility(View.VISIBLE);
-                    iv_deleteselection.setVisibility(View.VISIBLE);
-                    tv_countselection.setText(String.valueOf(selectedlist.size()));
-                }
             }else {
                 selectedlist.add(nomor);
                 contentselectedlist.add(messageadapter.items.get(position).getUrl());
-                if(selectedlist.size() > 0){
-                    rowselecteditem.setVisibility(View.VISIBLE);
-                    iv_deleteselection.setVisibility(View.VISIBLE);
-                    tv_countselection.setText(String.valueOf(selectedlist.size()));
-                }
             }
-            messageadapter.notifyDataSetChanged();
+            setSelectedMessage();
         }
     }
 
+    private void setSelectedMessage(){
+        if(String.valueOf(selectedlist.size()).equals("0")){
+            iv_cancelselection.performClick();
+        }else if(selectedlist.size() > 0) {
+            if(selectedlist.size() == 1){iv_replyselection.setVisibility(View.VISIBLE);
+            }else {iv_replyselection.setVisibility(View.GONE);}
+            if(copymode){iv_copyselection.setVisibility(View.VISIBLE); iv_deleteselection.setVisibility(View.GONE);}
+            if(deletemedia) { iv_copyselection.setVisibility(View.GONE); iv_deleteselection.setVisibility(View.VISIBLE);}
+            rowselecteditem.setVisibility(View.VISIBLE);
+            tv_countselection.setText(String.valueOf(selectedlist.size())); tv_countselection.setTextSize(22);
+        }
+        messageadapter.notifyDataSetChanged();
+    }
+
     private void setPreviewMedia(String mediaName){
-        if(previewmedia == "photo"){
+        if(previewmedia.equals("photo")){
             iv_previewphoto.setImageBitmap(loadImageBitmap(getContext(), mediaName));
             iv_previewphoto.setVisibility(View.VISIBLE);
-        }else if(previewmedia == "video"){
+        }else if(previewmedia.equals("video")){
             iv_previewvideo.setImageBitmap(loadVideoThumbnailBitmap(getContext(), mediaName));
             iv_previewvideo.setVisibility(View.VISIBLE);
             iv_previewvideo_icontrans.setVisibility(View.VISIBLE);
@@ -294,6 +274,7 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
         tv_countselection.setVisibility(View.GONE);
         iv_copyselection.setVisibility(View.GONE);
         iv_deleteselection.setVisibility(View.GONE);
+        iv_replyselection.setVisibility(View.GONE);
         rowselecteditem.setVisibility(View.VISIBLE);
     }
 
@@ -322,6 +303,8 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
 
     private void addSendMessageToAdapter(String nomor, String nama, String et_newmessage, String tipe, String url){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        TimeZone timeZone = TimeZone.getTimeZone("Asia/Jakarta"); //same with Timezone server
+        sdf.setTimeZone(timeZone);
         String date = sdf.format(new Date());
 
         messageadapter.add(new PrivateMessageAdapter(nomor, nama, et_newmessage, tipe, url, date, "1"));
@@ -333,43 +316,45 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
         v.startAnimation(Index.buttoneffect);
         if (v.getId() == R.id.btn_sendmessage) {
             boolean checksend = true;
-            if(tipe_send.equals("2")){
+            if (tipe_send.equals("2")) {
                 addSendMessageToAdapter("", "You", et_newmessage.getText().toString(), "2", mCurrentPhotoName);
                 new doFileUpload().execute(decodeFile(mCurrentPhotoPathRaw, 1920, 1080));
-            }else if(tipe_send.equals("3")){
+            } else if (tipe_send.equals("3")) {
                 addSendMessageToAdapter("", "You", et_newmessage.getText().toString(), "3", mCurrentVideoName);
                 new doFileUpload().execute(mCurrentVideoPathRaw);
-            }else if(tipe_send.equals("4")){
+            } else if (tipe_send.equals("4")) {
                 addSendMessageToAdapter("", "You", et_newmessage.getText().toString(), "2", realName);
                 new doFileUpload().execute(decodeFile(realPath, 1920, 1080));
-            }else if(tipe_send.equals("5")){
+            } else if (tipe_send.equals("5")) {
                 addSendMessageToAdapter("", "You", et_newmessage.getText().toString(), "3", realName);
                 new doFileUpload().execute(realPath);
-            }else if(tipe_send.equals("") || tipe_send.equals("1")){
+            } else if (tipe_send.equals("") || tipe_send.equals("1") || tipe_send.equals("6")) {
                 if (et_newmessage.getText().toString().trim().length() > 0) {
-                    tipe_send = "1";
-                    addSendMessageToAdapter("", "You", et_newmessage.getText().toString(), "1", "");
-                }else {
+                    if(tipe_send.equals("6")){
+                        addSendMessageToAdapter("", "You", replymode + "-R3p7y-" + et_newmessage.getText().toString(), "4", "");
+                    }else {
+                        tipe_send = "1";
+                        addSendMessageToAdapter("", "You", et_newmessage.getText().toString(), "1", "");
+                    }
+                } else {
                     checksend = false;
                     Toast.makeText(getActivity(), "Message can't be empty!", Toast.LENGTH_SHORT).show();
                 }
             }
-            if(!tipe_send.equals("") && checksend){
+            if (!tipe_send.equals("") && checksend) {
                 String actionUrl = "Message/sendPrivateMessage/";
                 new sendMessage().execute(actionUrl);
                 et_newmessage.setText("");
-                if(!tipe_send.equals("1")){
-                    clearPreviewMedia();}
             }
-        }else if (v.getId() == R.id.btn_othermenumessage){
-            if(!clickothermenu && previewmedia.equals("")){
+        } else if (v.getId() == R.id.btn_othermenumessage) {
+            if (!clickothermenu && previewmedia.equals("")) {
                 rowothermenu.setVisibility(View.VISIBLE);
                 clickothermenu = true;
-            }else if(clickothermenu && previewmedia.equals("")) {
+            } else if (clickothermenu && previewmedia.equals("")) {
                 rowothermenu.setVisibility(View.GONE);
                 clickothermenu = false;
             }
-        }else if (v.getId() == R.id.btn_takephoto){
+        } else if (v.getId() == R.id.btn_takephoto) {
             btn_othermenumessage.performClick();
 
             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -387,7 +372,7 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
                     startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
                 }
             }
-        }else if(v.getId() == R.id.btn_takevideo){
+        } else if (v.getId() == R.id.btn_takevideo) {
             btn_othermenumessage.performClick();
 
             Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
@@ -395,19 +380,19 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
                 File videoFile = null;
                 try {
                     videoFile = createVideoFile();
-                } catch ( IOException ex ) { //System.out.println( "Error creating file." );
+                } catch (IOException ex) { //System.out.println( "Error creating file." );
                     Log.i("err", ex.toString());
                 }
 
-                if ( videoFile != null ) {
-                    takeVideoIntent.putExtra( MediaStore.EXTRA_OUTPUT, Uri.fromFile( videoFile ) );
-                    takeVideoIntent.putExtra( MediaStore.EXTRA_VIDEO_QUALITY, 0 ); // 1-> high quality with higher file size  0-> lower quality and lower file size
-                    takeVideoIntent.putExtra( MediaStore.EXTRA_SIZE_LIMIT, 15000000L );
-                    takeVideoIntent.putExtra( MediaStore.EXTRA_DURATION_LIMIT, 10 ); //int second
-                    startActivityForResult( takeVideoIntent, REQUEST_VIDEO_CAPTURE);
+                if (videoFile != null) {
+                    takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(videoFile));
+                    takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0); // 1-> high quality with higher file size  0-> lower quality and lower file size
+                    takeVideoIntent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 15000000L);
+                    takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 10); //int second
+                    startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
                 }
             }
-        }else if(v.getId() == R.id.btn_selectphoto){
+        } else if (v.getId() == R.id.btn_selectphoto) {
             btn_othermenumessage.performClick();
             Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
             getIntent.setType("image/*");
@@ -416,10 +401,10 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
             pickIntent.setType("image/*");
 
             Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
-            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
 
             startActivityForResult(chooserIntent, PICK_IMAGE_REQUEST);
-        }else if(v.getId() == R.id.btn_selectvideo){
+        } else if (v.getId() == R.id.btn_selectvideo) {
             btn_othermenumessage.performClick();
             Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
             getIntent.setType("video/*");
@@ -428,79 +413,146 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
             pickIntent.setType("video/*");
 
             Intent chooserIntent = Intent.createChooser(getIntent, "Select Video");
-            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
 
             startActivityForResult(chooserIntent, PICK_VIDEO_REQUEST);
-        }else if(v.getId() == R.id.iv_cancelselection){
-            if(!previewmedia.equals("")){
-                if(tipe_send.equals("2")){
-                    doDeletePreviewMedia(mCurrentPhotoName); btn_takephoto.clearFocus();}
-                if(tipe_send.equals("3")){
-                    doDeletePreviewMedia(mCurrentVideoName); btn_takevideo.clearFocus();}
-                if(tipe_send.equals("4") || tipe_send.equals("5")){
-                    doDeletePreviewMedia(realName); btn_selectphoto.clearFocus(); btn_selectvideo.clearFocus();}
+        } else if (v.getId() == R.id.iv_cancelselection) {
+            if (!previewmedia.equals("")) {
+                if (tipe_send.equals("2")) {
+                    doDeletePreviewMedia(mCurrentPhotoName);
+                    btn_takephoto.clearFocus();
+                }
+                if (tipe_send.equals("3")) {
+                    doDeletePreviewMedia(mCurrentVideoName);
+                    btn_takevideo.clearFocus();
+                }
+                if (tipe_send.equals("4") || tipe_send.equals("5")) {
+                    doDeletePreviewMedia(realName);
+                    btn_selectphoto.clearFocus();
+                    btn_selectvideo.clearFocus();
+                }
                 clearPreviewMedia();
-            }else{
+            }else {
                 copymode = false;
                 deletemedia = false;
-                tv_countselection.setText("0");
-                tv_countselection.setVisibility(View.VISIBLE);
+                replymode = "";
+                tv_countselection.setText("0"); tv_countselection.setTextSize(22); tv_countselection.setVisibility(View.VISIBLE);
                 iv_copyselection.setVisibility(View.GONE);
                 iv_deleteselection.setVisibility(View.GONE);
+                iv_replyselection.setVisibility(View.GONE);
                 selectedlist.clear();
                 contentselectedlist.clear();
                 messageadapter.notifyDataSetChanged();
             }
             rowselecteditem.setVisibility(View.GONE);
-        }else if(v.getId() == R.id.iv_copyselection){
+        } else if (v.getId() == R.id.iv_copyselection) {
             android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
             String tampselection = "";
-            if(selectedlist.size()>0){
-                if(String.valueOf(selectedlist.size()).equals("1")){
+            if (selectedlist.size() > 0) {
+                if (String.valueOf(selectedlist.size()).equals("1")) {
                     for (int j = 0; j < messageadapter.getCount(); j++) {
                         PrivateMessageAdapter adapter = messageadapter.getItem(j);
-                        if(adapter.getNomor().toString().equals(selectedlist.get(0))){
+                        if (adapter.getNomor().toString().equals(selectedlist.get(0))) {
                             tampselection = adapter.getMessage();
+                            if(adapter.getTipe().equals("4")){
+                                String[] separated = adapter.getMessage().split("\\-R3p7y-");
+                                tampselection = separated[1];
+                            }
                         }
                     }
-                }else {
-                    for(int i=0; i<selectedlist.size(); i++){
-                        tampselection = tampselection + contentselectedlist.get(i) + '\n';
+                } else {
+                    ArrayList<Integer> unsortedList = new ArrayList<Integer>();
+                    for(String stringValue : selectedlist) {
+                        unsortedList.add(Integer.parseInt(stringValue));
+                    }
+                    Collections.sort(unsortedList);
+                    System.out.println("Sorted ArrayList in Java - Ascending order : " + unsortedList);
+                    for (int i = 0; i < messageadapter.getCount(); i++) {
+                        PrivateMessageAdapter adapter = messageadapter.getItem(i);
+                        for(int j = 0; j < unsortedList.size(); j++){
+                            if (adapter.getNomor().toString().equals(String.valueOf(unsortedList.get(j)))) {
+                                String tv_nama = adapter.getNama();
+                                if(tv_nama.equals("You")){
+                                    tv_nama = Index.globalfunction.getShared("user", "username", "");
+                                    tv_nama = tv_nama.substring(0, 1).toUpperCase() + tv_nama.substring(1);
+                                }
+                                String tv_date = adapter.getTime();
+                                try{
+                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                    TimeZone timeZone = TimeZone.getTimeZone("Asia/Jakarta"); //change to date Timezone server - Asia/Jakarta
+                                    sdf.setTimeZone(timeZone);
+                                    Date newdate = sdf.parse(tv_date);
+                                    tv_date = sdf.format(newdate);
+
+                                    SimpleDateFormat datetimeformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                                    timeZone = TimeZone.getTimeZone(TimeZone.getDefault().getID()); //from Timezone server to Timezone app
+                                    datetimeformat.setTimeZone(timeZone);
+                                    newdate = sdf.parse(tv_date);
+                                    tv_date = datetimeformat.format(newdate);
+                                }catch(Exception e) { e.printStackTrace(); }
+                                String tv_message = adapter.getMessage();
+                                if(adapter.getTipe().equals("4")){
+                                    String[] separated = adapter.getMessage().split("\\-R3p7y-");
+                                    tv_message = separated[1];
+                                }
+                                tampselection = tampselection + "[" + tv_date + "] " + tv_nama + ": " + tv_message + '\n';
+                            }
+                        }
                     }
                 }
                 android.content.ClipData clip = android.content.ClipData.newPlainText("Private Message", tampselection);
                 clipboard.setPrimaryClip(clip);
-                if(String.valueOf(selectedlist.size()).equals("1")){
+                if (String.valueOf(selectedlist.size()).equals("1")) {
                     Toast.makeText(getActivity(), "Copied to Clipboard", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     Toast.makeText(getActivity(), String.valueOf(selectedlist.size()) + " Messages Copied", Toast.LENGTH_SHORT).show();
                 }
                 iv_cancelselection.performClick();
             }
-        }else  if(v.getId() == R.id.iv_deleteselection){
+        } else if (v.getId() == R.id.iv_deleteselection) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
             dialog.setCancelable(false);
-            if(String.valueOf(selectedlist.size()).equals("1")){
+            if (String.valueOf(selectedlist.size()).equals("1")) {
                 String nama = "";
                 for (int j = 0; j < messageadapter.getCount(); j++) {
                     PrivateMessageAdapter adapter = messageadapter.getItem(j);
-                    if(adapter.getNomor().toString().equals(selectedlist.get(0))){ nama = adapter.getNama(); }
+                    if (adapter.getNomor().toString().equals(selectedlist.get(0))) {
+                        nama = adapter.getNama();
+                    }
                 }
                 dialog.setTitle("Delete message from " + nama + "?");
-            }else {
+            } else {
                 dialog.setTitle("Delete " + String.valueOf(selectedlist.size()) + " messages?");
             }
             dialog.setMessage("[!] Delete media from phone.");
             dialog.setPositiveButton("CANCEL", new DialogInterface.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int id) { dialog.cancel(); }
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                }
             });
             dialog.setNegativeButton("DELETE", new DialogInterface.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) { doDeleteMedia(); }
+                public void onClick(DialogInterface dialog, int which) {
+                    doDeleteMedia();
+                }
             });
             final AlertDialog alert = dialog.create();
             alert.show();
+        }else if(v.getId() == R.id.iv_replyselection){
+            if(copymode) {
+                copymode = false;
+                deletemedia = false;
+                tv_countselection.setText("Reply Message");
+                tv_countselection.setTextSize(18);
+                tv_countselection.setVisibility(View.VISIBLE);
+                iv_copyselection.setVisibility(View.GONE);
+                iv_deleteselection.setVisibility(View.GONE);
+                iv_replyselection.setVisibility(View.GONE);
+                replymode = selectedlist.get(0);
+                tipe_send = "6";
+                contentselectedlist.clear();
+            }
         }else if(v.getId() == R.id.iv_previewphoto){
             if(tipe_send.equals("2")){ doOpenImage(mCurrentPhotoName);
             }else if(tipe_send.equals("4")){ doOpenImage(realName); }
@@ -532,7 +584,11 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
                 Index.jsonObject = new JSONObject();
                 Index.jsonObject.put("userfrom_nomor", userfrom_nomor);
                 Index.jsonObject.put("userto_nomor", userto_nomor);
-                Index.jsonObject.put("new_message", new_message);
+                if(tipe_send.equals("6")){
+                    Index.jsonObject.put("new_message", replymode + "-R3p7y-" + new_message);
+                }else {
+                    Index.jsonObject.put("new_message", new_message);
+                }
                 if(tipe_send.equals("1")){
                     Index.jsonObject.put("tipe_send", "1");
                 }else if (tipe_send.equals("2") || tipe_send.equals("4")){
@@ -549,6 +605,8 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
                     }else {
                         url = realName;
                     }
+                }else if(tipe_send.equals("6")){
+                    Index.jsonObject.put("tipe_send", "4");
                 }
                 Index.jsonObject.put("url", url);
             } catch (JSONException e) {
@@ -574,6 +632,8 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
                         messageadapter.notifyDataSetChanged();
 
                         lv_message.smoothScrollToPosition(messageadapter.getCount() - 1);
+                        if(!tipe_send.equals("1")) { clearPreviewMedia();}
+                        if(tipe_send.equals("6")){ iv_cancelselection.performClick(); }
                     }else{
                         Toast.makeText(getContext(), "Failed send message", Toast.LENGTH_LONG).show();
                     }
@@ -1183,9 +1243,9 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
         public class Holder {
             PrivateMessageAdapter adapterMessage;
             RelativeLayout item_list, contentmessage, back_item_list;
-            TextView date, message, timein, timeout, status;
-            LinearLayout datecontent, messagedesc;
-            ImageView foto, video, videoicon;
+            TextView unreadmessage, date, message, timein, timeout, status, namereply, messagereply;
+            LinearLayout datecontent, messagedesc, contentmessagereply;
+            ImageView foto, video, videoicon, fotoreply, videoreply;
             Bitmap bitmap;
         }
 
@@ -1210,6 +1270,7 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
             holder.message = (TextView)row.findViewById(R.id.tv_message);
             holder.datecontent = (LinearLayout)row.findViewById(R.id.privatemessage_date);
             holder.date = (TextView)row.findViewById(R.id.tv_datemessage);
+            holder.unreadmessage = (TextView) row.findViewById(R.id.tv_unreadmessage);
             holder.timein = (TextView)row.findViewById(R.id.tv_timemessagein);
             holder.timeout = (TextView)row.findViewById(R.id.tv_timemessageout);
             holder.status = (TextView)row.findViewById(R.id.tv_messageread);
@@ -1218,6 +1279,11 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
             holder.foto = (ImageView) row.findViewById(R.id.iv_photomessage);
             holder.video = (ImageView) row.findViewById(R.id.iv_videomessage);
             holder.videoicon = (ImageView) row.findViewById(R.id.iv_videomessage_icontrans);
+            holder.contentmessagereply = (LinearLayout) row.findViewById(R.id.privatemessage_contentmessagereply);
+            holder.namereply = (TextView) row.findViewById(R.id.tv_messagereplyfrom);
+            holder.messagereply = (TextView) row.findViewById(R.id.tv_messagereply);
+            holder.fotoreply = (ImageView) row.findViewById(R.id.iv_photomessagereply);
+            holder.videoreply = (ImageView) row.findViewById(R.id.iv_videomessagereply);
 
             row.setTag(holder);
             setupItem(holder);
@@ -1231,7 +1297,7 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
                     if(!deletemedia && !copymode && (finalHolder.adapterMessage.getTipe().equals("2") || finalHolder.adapterMessage.getTipe().equals("3"))){
                         deletemedia = true;
                         clickDeleteMedia(finalHolder.adapterMessage.getTipe(), finalHolder.adapterMessage.getNomor(), position);
-                    }else if(!copymode && !deletemedia && finalHolder.adapterMessage.getTipe().equals("1")) {
+                    }else if(!copymode && !deletemedia && (finalHolder.adapterMessage.getTipe().equals("1") || finalHolder.adapterMessage.getTipe().equals("4"))) {
                         copymode = true;
                         clickCopyText(finalHolder.adapterMessage.getTipe(), finalHolder.adapterMessage.getNomor(), position, finalHolder.adapterMessage.getMessage());
                     }
@@ -1244,9 +1310,9 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
                 public void onClick(View view) {
                     view.startAnimation(Index.listeffect);
                     int position = getPosition(finalHolder);
-                    if(copymode && !deletemedia) {
+                    if(copymode && !deletemedia && (finalHolder.adapterMessage.getTipe().equals("1") || finalHolder.adapterMessage.getTipe().equals("4"))) {
                         clickCopyText(finalHolder.adapterMessage.getTipe(), finalHolder.adapterMessage.getNomor(), position, finalHolder.adapterMessage.getMessage());
-                    }else if(deletemedia && !copymode) {
+                    }else if(deletemedia && !copymode && (finalHolder.adapterMessage.getTipe().equals("2") || finalHolder.adapterMessage.getTipe().equals("3"))) {
                         clickDeleteMedia(finalHolder.adapterMessage.getTipe(), finalHolder.adapterMessage.getNomor(), position);
                     }
                 }
@@ -1270,7 +1336,7 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
                 public void onClick(View view) {
                     view.startAnimation(Index.listeffect);
                     int position = getPosition(holder);
-                    if(copymode && !deletemedia)
+                    if(copymode && !deletemedia && (holder.adapterMessage.getTipe().equals("1") || holder.adapterMessage.getTipe().equals("4")))
                         clickCopyText(holder.adapterMessage.getTipe(), holder.adapterMessage.getNomor(), position, holder.adapterMessage.getMessage());
                 }
             });
@@ -1279,7 +1345,7 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
                 public boolean onLongClick(View v) {
                     v.startAnimation(Index.listeffect);
                     int position = getPosition(holder);
-                    if(!copymode && !deletemedia && holder.adapterMessage.getTipe().equals("1")) {
+                    if(!copymode && !deletemedia && (holder.adapterMessage.getTipe().equals("1") || holder.adapterMessage.getTipe().equals("4"))) {
                         copymode = true;
                         clickCopyText(holder.adapterMessage.getTipe(), holder.adapterMessage.getNomor(), position, holder.adapterMessage.getMessage());
                     }
@@ -1294,7 +1360,7 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
                 public void onClick(View view) {
                     view.startAnimation(Index.listeffect);
                     int position = getPosition(holder);
-                    if(deletemedia && !copymode)
+                    if(deletemedia && !copymode && (holder.adapterMessage.getTipe().equals("2") || holder.adapterMessage.getTipe().equals("3")))
                         clickDeleteMedia(holder.adapterMessage.getTipe(), holder.adapterMessage.getNomor(), position);
                 }
             });
@@ -1439,11 +1505,19 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
             String date = holder.adapterMessage.getTime();
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                TimeZone timeZone = TimeZone.getTimeZone("Asia/Jakarta"); //change to date Timezone server - Asia/Jakarta
+                sdf.setTimeZone(timeZone);
                 Date newdate = sdf.parse(date);
-                date = sdf.format(newdate);
+
+                SimpleDateFormat sdfTimezone = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                timeZone = TimeZone.getTimeZone(TimeZone.getDefault().getID()); //from Timezone server to Timezone app
+                sdfTimezone.setTimeZone(timeZone);
+                String sDateInTimeZone = sdfTimezone.format(newdate); // Convert to String first
+                Date dateInTimeZone = sdf.parse(sDateInTimeZone); // Create a new Date object
+                date = sdf.format(dateInTimeZone);
 
                 SimpleDateFormat dateformat = new SimpleDateFormat("EEE, dd MMM yyyy");
-                Date d_today_db = sdf.parse(date);
+                Date d_today_db = sdfTimezone.parse(date);
                 String s_today_db = dateformat.format(d_today_db);
 
                 //get today date
@@ -1460,7 +1534,7 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
 
                 //show time
                 SimpleDateFormat timeformat = new SimpleDateFormat("HH:mm");
-                Date dt_today_db = sdf.parse(date);
+                Date dt_today_db = sdfTimezone.parse(date);
                 String st_today_db = timeformat.format(dt_today_db);
                 String time = st_today_db;
 
@@ -1518,40 +1592,24 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
                 Rparams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 holder.contentmessage.setLayoutParams(Rparams);
                 if(holder.adapterMessage.getStatus().equals("2")){ holder.status.setVisibility(View.VISIBLE); }
-                if(holder.adapterMessage.getTipe().equals("1")){
-                    setClickMessage(holder);
-                }else if(holder.adapterMessage.getTipe().equals("2")){
-                    holder.foto.setVisibility(View.VISIBLE);
-                    final String urlImage = Index.globalfunction.getImageURL() + holder.adapterMessage.getUrl();
-                    setPic(holder, urlImage);
-                    setClickMediaMessage(holder);
-                }else if(holder.adapterMessage.getTipe().equals("3")){
-                    holder.video.setVisibility(View.VISIBLE);
-                    final String urlVideo = Index.globalfunction.getImageURL() + holder.adapterMessage.getUrl();
-                    setVid(holder, urlVideo);
-                    setClickMediaMessage(holder);
-                }
             }else {
-
-                if (Build.VERSION.SDK_INT >= 21) {
-                    holder.contentmessage.setBackground(getResources().getDrawable(R.drawable.in_message));
-                } else {
-                    holder.contentmessage.setBackgroundDrawable(getResources().getDrawable(R.drawable.in_message));
+                boolean check = false;
+                if(holder.adapterMessage.getStatus().equals("1")){
+                    PrivateMessageAdapter adapter = messageadapter.getItem(getPosition(holder) - 1); //check before this list
+                    if(adapter.getNama().equals("You") || (!adapter.getNama().equals("You") && adapter.getStatus().equals("2"))){check = true; }
                 }
+                if(check) {
+                    holder.unreadmessage.setVisibility(View.VISIBLE);
+                    int count_unread = 0;
+                    for (int j = 0; j < messageadapter.getCount(); j++) {
+                        PrivateMessageAdapter adapter = messageadapter.getItem(j);
+                        if (adapter.getStatus().toString().equals("1") && !adapter.getNama().equals("You")) {count_unread += 1;}
+                    }
+                    if (count_unread > 1) {holder.unreadmessage.setText("  " + count_unread + " unread messages  ");}
+                }
+                if (Build.VERSION.SDK_INT >= 21) { holder.contentmessage.setBackground(getResources().getDrawable(R.drawable.in_message));
+                } else { holder.contentmessage.setBackgroundDrawable(getResources().getDrawable(R.drawable.in_message)); }
                 holder.messagedesc.setVisibility(View.GONE);
-                if(holder.adapterMessage.getTipe().equals("1")){
-                    setClickMessage(holder);
-                }else if(holder.adapterMessage.getTipe().equals("2")){
-                    holder.foto.setVisibility(View.VISIBLE);
-                    final String urlImage = Index.globalfunction.getImageURL() + holder.adapterMessage.getUrl();
-                    setPic(holder, urlImage);
-                    setClickMediaMessage(holder);
-                }else if(holder.adapterMessage.getTipe().equals("3")){
-                    holder.video.setVisibility(View.VISIBLE);
-                    final String urlVideo = Index.globalfunction.getImageURL() + holder.adapterMessage.getUrl();
-                    setVid(holder, urlVideo);
-                    setClickMediaMessage(holder);
-                }
             }
 
             if(holder.adapterMessage.getTipe().equals("1") || !holder.adapterMessage.getMessage().equals("")){
@@ -1559,25 +1617,137 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
                 holder.message.setText(holder.adapterMessage.getMessage());
                 holder.message.setTextIsSelectable(true);
                 int ctrmsg = holder.adapterMessage.getMessage().trim().length();
-                if(ctrmsg > 35){ Rparams.width = 450; holder.message.setWidth(450);}
-                holder.contentmessage.setLayoutParams(Rparams);
+                DisplayMetrics dm = new DisplayMetrics();
+                WindowManager windowManager = (WindowManager) getContext().getSystemService(WINDOW_SERVICE);
+                windowManager.getDefaultDisplay().getMetrics(dm);
+                int widthInDP = Math.round(dm.widthPixels / dm.density);
+                holder.message.setMaxWidth(widthInDP);
+                //if(ctrmsg > 35){ holder.message.setMaxWidth(400);}
             }else { holder.message.setVisibility(View.GONE); }
+
+            if(holder.adapterMessage.getTipe().equals("1")){
+                setClickMessage(holder);
+            }else if(holder.adapterMessage.getTipe().equals("2")){
+                holder.foto.setVisibility(View.VISIBLE);
+                final String urlImage = Index.globalfunction.getImageURL() + holder.adapterMessage.getUrl();
+                setPic(holder, urlImage);
+                setClickMediaMessage(holder);
+            }else if(holder.adapterMessage.getTipe().equals("3")){
+                holder.video.setVisibility(View.VISIBLE);
+                final String urlVideo = Index.globalfunction.getImageURL() + holder.adapterMessage.getUrl();
+                setVid(holder, urlVideo);
+                setClickMediaMessage(holder);
+            }else if(holder.adapterMessage.getTipe().equals("4")){
+                String[] separated = holder.adapterMessage.getMessage().split("\\-R3p7y-");
+                final int nomorreply = Integer.parseInt(separated[0]);
+                holder.message.setText(separated[1]);
+                holder.contentmessagereply.setVisibility(View.VISIBLE);
+                int positionreply = -1;
+                for (int j = 0; j < messageadapter.getCount(); j++) {
+                    PrivateMessageAdapter adapter = messageadapter.getItem(j);
+                    if (adapter.getNomor().toString().equals(String.valueOf(nomorreply))) { positionreply = j;}
+                }
+                if(positionreply == -1){
+                    new AsyncTask<String, Void, String>() {
+                        @Override
+                        protected String doInBackground(String... urls) {
+                            try {
+                                Index.jsonObject = new JSONObject();
+                                Index.jsonObject.put("nomor", String.valueOf(nomorreply));
+                            } catch (JSONException e) { e.printStackTrace(); }
+
+                            return Index.globalfunction.executePost(urls[0],Index.jsonObject);
+                        }
+                        @Override
+                        protected void onPostExecute(String result) {
+                            try {
+                                JSONArray jsonarray = new JSONArray(result);
+                                for (int i = 0; i < jsonarray.length(); i++) {
+                                    JSONObject obj = jsonarray.getJSONObject(i);
+                                    if(!obj.has("query")){
+                                        String userfrom_nomor = (obj.getString("userfrom_nomor"));
+                                        String userfrom_nama = (obj.getString("userfrom_nama"));
+                                        String message = (obj.getString("message"));
+                                        String url = (obj.getString("url"));
+                                        String tipe = (obj.getString("tipe"));
+                                        holder.namereply.setText("You");
+                                        String userid = Index.globalfunction.getShared("user","id","");
+                                        if (!userid.equals(userfrom_nomor)) {
+                                            String upper_nama = userfrom_nama.substring(0, 1).toUpperCase() + userfrom_nama.substring(1);
+                                            holder.namereply.setText(upper_nama);
+                                        }
+                                        if(message.length() > 30){ message = message.substring(0, 30) + "..."; }
+                                        if(tipe.equals("1")){ holder.messagereply.setText(message);
+                                        }else if(tipe.equals("2")){
+                                            holder.messagereply.setText("[Photo]" + '\n' + message);
+                                            holder.fotoreply.setVisibility(View.VISIBLE);
+                                            File storageDir = new File(getContext().getFileStreamPath(url).getAbsolutePath());
+                                            if(storageDir.exists()){holder.fotoreply.setImageBitmap(loadImageBitmap(getContext(), url));}
+                                        }else if(tipe.equals("3")){
+                                            holder.messagereply.setText("[Video]" + '\n' + message);
+                                            holder.videoreply.setVisibility(View.VISIBLE);
+                                            File storageDir = new File(getContext().getFileStreamPath(url).getAbsolutePath());
+                                            if(storageDir.exists()){holder.videoreply.setImageBitmap(loadVideoThumbnailBitmap(getContext(), url));}
+                                        }else if(tipe.equals("4")){
+                                            String[] separated = message.split("\\-R3p7y-");
+                                            holder.messagereply.setText(separated[1]);
+                                        }
+                                    }else{
+                                        Toast.makeText(getContext(), "Failed get message", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            }catch(Exception e) {
+                                e.printStackTrace();
+                                Toast.makeText(getContext(), "Failed get message", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }.execute("Message/getSpecificPrivateMessage/");
+
+                }else {
+                    holder.namereply.setText(messageadapter.items.get(positionreply).getNama());
+                    String tampmsg = messageadapter.items.get(positionreply).getMessage();
+                    if(messageadapter.items.get(positionreply).getMessage().length() > 30) {
+                        tampmsg = messageadapter.items.get(positionreply).getMessage().substring(0, 30) + "...";
+                    }
+                    if(messageadapter.items.get(positionreply).getTipe().equals("1")){
+                        holder.messagereply.setText(tampmsg);
+                    }else if(messageadapter.items.get(positionreply).getTipe().equals("2")){
+                        holder.messagereply.setText("[Photo]" + '\n' + tampmsg);
+                        holder.fotoreply.setVisibility(View.VISIBLE);
+                        File storageDir = new File(getContext().getFileStreamPath(messageadapter.items.get(positionreply).getUrl()).getAbsolutePath());
+                        if(storageDir.exists()){holder.fotoreply.setImageBitmap(loadImageBitmap(getContext(), messageadapter.items.get(positionreply).getUrl()));}
+                    }else if(messageadapter.items.get(positionreply).getTipe().equals("3")){
+                        holder.messagereply.setText("[Video]" + '\n' + tampmsg);
+                        holder.videoreply.setVisibility(View.VISIBLE);
+                        File storageDir = new File(getContext().getFileStreamPath(messageadapter.items.get(positionreply).getUrl()).getAbsolutePath());
+                        if(storageDir.exists()){holder.videoreply.setImageBitmap(loadVideoThumbnailBitmap(getContext(), messageadapter.items.get(positionreply).getUrl()));}
+                    }else if(messageadapter.items.get(positionreply).getTipe().equals("4")){
+                        separated = tampmsg.split("\\-R3p7y-");
+                        holder.messagereply.setText(separated[1]);
+                    }
+                }
+                final int finalPosition = positionreply;
+                holder.contentmessagereply.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(finalPosition == -1){
+                            Toast.makeText(getContext(), "The message still not shown on this page, please scroll up!", Toast.LENGTH_LONG).show();
+                        }else {
+                            lv_message.smoothScrollToPosition(finalPosition);
+                        }
+                    }
+                });
+            }
 
             if(selectedlist.size() > 0){
                 for(int i=0; i<selectedlist.size(); i++){
                     if(holder.adapterMessage.getNomor().equals(selectedlist.get(i))){
                         if(holder.adapterMessage.getNama().equals("You")){
-                            if (Build.VERSION.SDK_INT >= 21) {
-                                holder.contentmessage.setBackground(getResources().getDrawable(R.drawable.selected_out_message));
-                            } else {
-                                holder.contentmessage.setBackgroundDrawable(getResources().getDrawable(R.drawable.selected_out_message));
-                            }
+                            if (Build.VERSION.SDK_INT >= 21) { holder.contentmessage.setBackground(getResources().getDrawable(R.drawable.selected_out_message));
+                            } else { holder.contentmessage.setBackgroundDrawable(getResources().getDrawable(R.drawable.selected_out_message)); }
                         }else {
-                            if (Build.VERSION.SDK_INT >= 21) {
-                                holder.contentmessage.setBackground(getResources().getDrawable(R.drawable.selected_in_message));
-                            } else {
-                                holder.contentmessage.setBackgroundDrawable(getResources().getDrawable(R.drawable.selected_in_message));
-                            }
+                            if (Build.VERSION.SDK_INT >= 21) { holder.contentmessage.setBackground(getResources().getDrawable(R.drawable.selected_in_message));
+                            } else { holder.contentmessage.setBackgroundDrawable(getResources().getDrawable(R.drawable.selected_in_message)); }
                         }
                         holder.item_list.setBackgroundColor(Color.parseColor("#cde7f0"));
                         holder.datecontent.setBackgroundColor(Color.WHITE);

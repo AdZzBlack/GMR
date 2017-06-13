@@ -39,8 +39,6 @@ public class PrivateMessageUser extends Fragment implements View.OnClickListener
     private ListView lv_choose;
     private ItemListUserAdapter itemadapter;
 
-    private Boolean scroll = false;
-    private int counter = 0;
     private Thread t;
     private Boolean running = true;
 
@@ -77,32 +75,8 @@ public class PrivateMessageUser extends Fragment implements View.OnClickListener
 
             }
         });
-
-        lv_choose.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-            }
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-                // Scroll Down
-                int lastInScreen = firstVisibleItem + visibleItemCount;
-                if((lastInScreen == totalItemCount) && totalItemCount != 0){
-                    if(scroll == true)
-                    {
-                        scroll = false;
-                        counter += 1;
-
-                        String actionUrl = "Master/alldatausermessage/";
-                        new getUser().execute( actionUrl );
-                    }
-                }
-            }
-        });
         //--------END DECLARE---------------------------------------------------------------------
 
-        scroll = false;
         String actionUrl = "Master/alldatausermessage/";
         new getUser().execute( actionUrl );
 
@@ -114,7 +88,7 @@ public class PrivateMessageUser extends Fragment implements View.OnClickListener
                         try {
                             String actionUrl = "Master/alldatausermessage/";
                             new updateNotif().execute( actionUrl );
-                            Thread.sleep(5000);
+                            Thread.sleep(2000);
                         }catch (InterruptedException e){
                             running = false;
                             Thread.currentThread().interrupt();
@@ -142,7 +116,6 @@ public class PrivateMessageUser extends Fragment implements View.OnClickListener
         v.startAnimation(Index.buttoneffect);
         if(v.getId() == R.id.ib_search){
             itemadapter.clear();
-            counter = 0;
 
             String actionUrl = "Master/alldatausermessage/";
             new getUser().execute( actionUrl );
@@ -168,7 +141,6 @@ public class PrivateMessageUser extends Fragment implements View.OnClickListener
                 Index.jsonObject = new JSONObject();
                 Index.jsonObject.put("user_nomor", user_nomor);
                 Index.jsonObject.put("search", search);
-                Index.jsonObject.put("limit", counter);
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -195,14 +167,6 @@ public class PrivateMessageUser extends Fragment implements View.OnClickListener
                         }
                     }
                 }
-
-                if(jsonarray.length() < 10){
-                    scroll = false;
-                }
-                else {
-                    scroll = true;
-                }
-
                 hideLoading();
             }catch(Exception e)
             {
@@ -229,7 +193,6 @@ public class PrivateMessageUser extends Fragment implements View.OnClickListener
                 Index.jsonObject = new JSONObject();
                 Index.jsonObject.put("user_nomor", user_nomor);
                 Index.jsonObject.put("search", search);
-                Index.jsonObject.put("limit", counter);
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

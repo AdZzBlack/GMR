@@ -103,10 +103,20 @@
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
+                android:src="@drawable/reply"
+                android:padding="10dp"
+                android:id="@+id/iv_replyselection"
+                android:clickable="true"
+                android:layout_gravity="right"
+                android:visibility="gone"/>
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
                 android:src="@drawable/copy"
                 android:padding="10dp"
                 android:id="@+id/iv_copyselection"
                 android:clickable="true"
+                android:layout_gravity="right"
                 android:visibility="gone"/>
             <ImageView
                 android:layout_width="50dp"
@@ -115,6 +125,7 @@
                 android:padding="10dp"
                 android:id="@+id/iv_deleteselection"
                 android:clickable="true"
+                android:layout_gravity="right"
                 android:visibility="gone"/>
         </LinearLayout>
 
