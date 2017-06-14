@@ -57,8 +57,6 @@ public class Index extends AppCompatActivity implements NavigationView.OnNavigat
         Intent intent = new Intent(this, GCMInstanceIDRegistrationService.class);
         startService(intent);
 
-        Boolean getCount = false;
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         Menu navmenu = navigationView.getMenu();
@@ -76,7 +74,6 @@ public class Index extends AppCompatActivity implements NavigationView.OnNavigat
             approveElevasi.setTypeface(null, Typeface.BOLD);
             approveElevasi.setTextColor(getResources().getColor(R.color.colorPrimary));
             approveElevasi.setText("0");
-            getCount = true;
         }
         else
         {
@@ -89,7 +86,6 @@ public class Index extends AppCompatActivity implements NavigationView.OnNavigat
             approveOrder.setTypeface(null, Typeface.BOLD);
             approveOrder.setTextColor(getResources().getColor(R.color.colorPrimary));
             approveOrder.setText("0");
-            getCount = true;
         }
         else
         {
@@ -107,7 +103,6 @@ public class Index extends AppCompatActivity implements NavigationView.OnNavigat
             disapprovedOrder.setTypeface(null, Typeface.BOLD);
             disapprovedOrder.setTextColor(getResources().getColor(R.color.colorPrimary));
             disapprovedOrder.setText("0");
-            getCount = true;
         }
         else
         {
@@ -129,29 +124,25 @@ public class Index extends AppCompatActivity implements NavigationView.OnNavigat
         privateMessage.setTextColor(getResources().getColor(R.color.colorPrimary));
         privateMessage.setText("0");
 
-        if(getCount)
-        {
-            Thread t = new Thread() {
+        Thread t = new Thread() {
 
-                @Override
-                public void run() {
-                    try {
-                        while (!isInterrupted()) {
-                            Thread.sleep(5000);
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    initializeCountDrawer();
-                                }
-                            });
-                        }
-                    } catch (InterruptedException e) {
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted()) {
+                        Thread.sleep(5000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                initializeCountDrawer();
+                            }
+                        });
                     }
+                } catch (InterruptedException e) {
                 }
-            };
-            t.start();
-        }
-
+            }
+        };
+        t.start();
 
         Fragment fragment = new Dashboard();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
