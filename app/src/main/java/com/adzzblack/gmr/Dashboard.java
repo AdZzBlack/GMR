@@ -24,9 +24,9 @@ import java.text.DecimalFormat;
 
 public class Dashboard extends Fragment implements View.OnClickListener {
 
-    private ImageButton ib_berita, ib_delivery, ib_bpm, ib_opname;
-    private RelativeLayout rl_berita, rl_delivery, rl_bpm, rl_opname;
-    private RelativeLayout rl_unavaiable1, rl_unavaiable2, rl_unavaiable3, rl_unavaiable4;
+    private ImageButton ib_berita, ib_delivery, ib_bpm, ib_opname, ib_pasang;
+    private RelativeLayout rl_berita, rl_delivery, rl_bpm, rl_opname, rl_pasang;
+    private RelativeLayout rl_unavaiable1, rl_unavaiable2, rl_unavaiable3, rl_unavaiable4, rl_unavaiable5;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,11 +50,14 @@ public class Dashboard extends Fragment implements View.OnClickListener {
         ib_bpm= (ImageButton) v.findViewById(R.id.ib_bpm);
         rl_opname = (RelativeLayout) v.findViewById(R.id.rl_opname);
         ib_opname = (ImageButton) v.findViewById(R.id.ib_opname);
+        rl_pasang = (RelativeLayout) v.findViewById(R.id.rl_pasang);
+        ib_pasang = (ImageButton) v.findViewById(R.id.ib_pasang);
 
         rl_unavaiable1 = (RelativeLayout) v.findViewById(R.id.rl_unavaiable1);
         rl_unavaiable2 = (RelativeLayout) v.findViewById(R.id.rl_unavaiable2);
         rl_unavaiable3 = (RelativeLayout) v.findViewById(R.id.rl_unavaiable3);
         rl_unavaiable4 = (RelativeLayout) v.findViewById(R.id.rl_unavaiable4);
+        rl_unavaiable5 = (RelativeLayout) v.findViewById(R.id.rl_unavaiable5);
 
         if(Index.globalfunction.getShared("user", "role_beritaacara", "0").equals("0"))
         {
@@ -109,6 +112,20 @@ public class Dashboard extends Fragment implements View.OnClickListener {
             ib_opname.setOnClickListener(this);
         }
 
+        Log.d("tes", Index.globalfunction.getShared("user", "role_pasang", "0"));
+        if(Index.globalfunction.getShared("user", "role_pasang", "1").equals("0"))
+        {
+            rl_pasang.setVisibility(View.GONE);
+            rl_unavaiable5.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            rl_pasang.setVisibility(View.VISIBLE);
+            rl_unavaiable5.setVisibility(View.GONE);
+            rl_pasang.setOnClickListener(this);
+            ib_pasang.setOnClickListener(this);
+        }
+
         return v;
     }
 	
@@ -157,6 +174,17 @@ public class Dashboard extends Fragment implements View.OnClickListener {
             Index.globalfunction.setShared("bangunan", "header", "0");
             Index.globalfunction.setShared("bangunan", "before", "");
             Index.globalfunction.setShared("global", "destination", "opname");
+
+            Fragment fragment = new ChooseBangunan();
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
+        else if(v.getId() == R.id.rl_pasang || v.getId() == R.id.ib_pasang){
+            Index.globalfunction.setShared("bangunan", "header", "0");
+            Index.globalfunction.setShared("bangunan", "before", "");
+            Index.globalfunction.setShared("global", "destination", "pasang");
 
             Fragment fragment = new ChooseBangunan();
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();

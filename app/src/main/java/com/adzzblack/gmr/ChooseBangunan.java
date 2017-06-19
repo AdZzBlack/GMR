@@ -146,7 +146,6 @@ public class ChooseBangunan extends Fragment implements View.OnClickListener {
                 Index.jsonObject = new JSONObject();
                 Index.jsonObject.put("nomor_header", Index.globalfunction.getShared("bangunan", "header", "0"));
                 Index.jsonObject.put("search", search);
-                Index.jsonObject.put("limit", counter);
                 if(Index.globalfunction.getShared("global", "destination", "").equals("delivery") || Index.globalfunction.getShared("global", "destination", "").equals("opname"))
                 {
                     Index.jsonObject.put("need_elevasi", "1");
@@ -165,8 +164,9 @@ public class ChooseBangunan extends Fragment implements View.OnClickListener {
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            Log.d("result", result);
+            Log.d("result", result + ", " + Index.globalfunction.getShared("bangunan", "header", "0"));
             try {
+                hideLoading();
                 JSONArray jsonarray = new JSONArray(result);
                 if(jsonarray.length() > 0){
                     for (int i = 0; i < jsonarray.length(); i++) {
@@ -183,15 +183,6 @@ public class ChooseBangunan extends Fragment implements View.OnClickListener {
                         }
                     }
                 }
-
-                if(jsonarray.length() < 10){
-                    scroll = false;
-                }
-                else{
-                    scroll = true;
-                }
-
-                hideLoading();
             }catch(Exception e)
             {
                 e.printStackTrace();
@@ -352,16 +343,24 @@ public class ChooseBangunan extends Fragment implements View.OnClickListener {
                             transaction.addToBackStack(null);
                             transaction.commit();
                         }
-                        else if(Index.globalfunction.getShared("global", "destination", "").equals("map"))
+                        else if(Index.globalfunction.getShared("global", "destination", "").equals("pasang"))
                         {
-//                            Fragment fragment = new Maps();
-//                            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-//                            transaction.replace(R.id.fragment_container, fragment);
-//                            transaction.addToBackStack(null);
-//                            transaction.commit();
+                            Fragment fragment = new FormPasang();
+                            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                            transaction.replace(R.id.fragment_container, fragment);
+                            transaction.addToBackStack(null);
+                            transaction.commit();
+                        }
+                        else if(Index.globalfunction.getShared("global", "destination", "").equals("galerypasang"))
+                        {
+                            Fragment fragment = new Galery();
+                            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                            transaction.replace(R.id.fragment_container, fragment);
+                            transaction.addToBackStack(null);
+                            transaction.commit();
                         }
                     }
-                    else
+                    else if(finalHolder.adapterItem.getStatusAnak().equals("1"))
                     {
                         Index.globalfunction.setShared("bangunan", "before", Index.globalfunction.getShared("bangunan", "before", "0") + Index.globalfunction.getShared("bangunan", "header", "0") + ",");
                         Index.globalfunction.setShared("bangunan", "header", finalHolder.adapterItem.getNomor());

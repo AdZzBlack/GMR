@@ -33,6 +33,7 @@ public class SplashScreen extends AppCompatActivity {
         setContentView(R.layout.splashscreen);
 
         globalfunction = new GlobalFunction(this);
+        globalfunction.setShared("server", "servernow", "gmr.inspiraworld.com");
 
         new Handler().postDelayed(new Runnable() {
             @Override

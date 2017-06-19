@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:layout_marginTop="?android:attr/actionBarSize">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:isScrollContainer="true"
+        android:scrollbarStyle="insideOverlay"
+        android:scrollbars="vertical"
+        android:layout_above="@+id/tl_footer">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/ll">
+
+                <Button
+                    android:text="Add Picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:id="@+id/btn_add"
+                    />
+            </TableLayout>
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tl_content"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    app:srcCompat="@drawable/camera"
+                    android:background="@color/colorLine"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:id="@+id/imageView"
+                    android:scaleType="fitCenter"
+                    android:padding="10dp"
+                    android:adjustViewBounds="true"
+                    android:clickable="true"
+                    android:visibility="gone"/>
+
+                <ImageButton
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:id="@+id/ib_camera"
+                    android:src="@drawable/camera"
+                    android:scaleType="fitCenter"
+                    android:padding="50dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentRight="true"/>
+
+                <Button
+                    android:text="Change Image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:id="@+id/btn_changeimage"
+                    />
+            </TableLayout>
+
+
+        </RelativeLayout>
+    </ScrollView>
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/tl_footer">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Berita Acara Sesuai urutan"
+                android:id="@+id/btn_send"
+                android:background="@drawable/btnstyle_bottom"
+                android:textColor="@color/colorWhite"
+                android:layout_weight="1"
+                android:layout_margin="0dp"/>
+        </TableRow>
+    </TableLayout>
+</RelativeLayout>

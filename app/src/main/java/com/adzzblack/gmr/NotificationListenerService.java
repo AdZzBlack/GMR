@@ -44,6 +44,8 @@ public class NotificationListenerService extends GcmListenerService {
         nb.setLights(Color.YELLOW, 500, 500);
         nb.setVibrate(pattern);
 
+        Index.initializeCountDrawer();
+
         if(fragment.equals("PrivateMessage") && nomor.equals(Index.globalfunction.getShared("message","userto_nomor","")))
         {
             Index.globalfunction.setShared("message","private_run_check","1");

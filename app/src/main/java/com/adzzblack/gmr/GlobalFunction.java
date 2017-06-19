@@ -9,6 +9,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -95,6 +97,10 @@ public class GlobalFunction {
 
             // 1. create HttpClient
             HttpClient httpclient = new DefaultHttpClient();
+            HttpParams httpParameters = httpclient.getParams();
+            HttpConnectionParams.setConnectionTimeout(httpParameters, 1000);
+            HttpConnectionParams.setSoTimeout(httpParameters, 1000);
+            HttpConnectionParams.setTcpNoDelay(httpParameters, true);
 
             // 2. make POST request to the given URL
             HttpPost httpPost = new HttpPost( hostUrl + targetURL );

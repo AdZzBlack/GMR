@@ -1,10 +1,6 @@
 package com.adzzblack.gmr;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -13,21 +9,16 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,21 +35,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class FormOpname extends Fragment implements View.OnClickListener {
+public class FormPasang extends Fragment implements View.OnClickListener {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
-    private TextView tv_bangunan;
-    private TextView tv_pekerjaan;
-    private TextView tv_mandor;
-    private TextView tv_luas;
-    private TextView tv_satuan;
-    private TextView tv_satuan1;
-    private TextView tv_progress;
-    private EditText et_progress;
     private Button btn_send;
     private Button btn_add;
 
@@ -75,8 +57,7 @@ public class FormOpname extends Fragment implements View.OnClickListener {
     private ImageView mImageView;
     private int ctrImage = 0;
 
-    private String nomor, pekerjaan, bangunan;
-    private int oldProgress;
+    private String bangunan;
 
     private Bitmap mImageBitmap;
     private String mCurrentPhotoName = "";
@@ -93,12 +74,10 @@ public class FormOpname extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.form_opname, container, false);
-        getActivity().setTitle("Form Opname");
+        View v = inflater.inflate(R.layout.form_pasang, container, false);
+        getActivity().setTitle("Form Berita Acara Sesuai Urutan");
 
         //-----START DECLARE---------------------------------------------------------------------------------------
-        nomor = Index.globalfunction.getShared("global", "nomorrab", "");
-        pekerjaan = Index.globalfunction.getShared("global", "namarab", "");
         bangunan = Index.globalfunction.getShared("bangunan", "namaNow", "a");
 
         btn_send = (Button) v.findViewById(R.id.btn_send);
@@ -106,15 +85,6 @@ public class FormOpname extends Fragment implements View.OnClickListener {
 
         btn_add = (Button) v.findViewById(R.id.btn_add);
         btn_add.setOnClickListener(this);
-
-        tv_bangunan = (TextView) v.findViewById(R.id.tv_bangunan);
-        tv_pekerjaan = (TextView) v.findViewById(R.id.tv_pekerjaan);
-        tv_mandor = (TextView) v.findViewById(R.id.tv_mandor);
-        tv_luas = (TextView) v.findViewById(R.id.tv_luas);
-        tv_satuan = (TextView) v.findViewById(R.id.tv_satuan);
-        tv_satuan1 = (TextView) v.findViewById(R.id.tv_satuan1);
-        tv_progress = (TextView) v.findViewById(R.id.tv_progress);
-        et_progress = (EditText) v.findViewById(R.id.et_progress);
 
         layout = (TableLayout) v.findViewById(R.id.ll);
 
@@ -150,33 +120,7 @@ public class FormOpname extends Fragment implements View.OnClickListener {
             }
         });
 
-        tv_bangunan.setText(bangunan);
-        tv_pekerjaan.setText(pekerjaan);
-
-        et_progress.addTextChangedListener(new TextWatcher() {
-
-            public void afterTextChanged(Editable s) {
-                try {
-                    Float luasProgress = Float.parseFloat(et_progress.getText().toString());
-                    Float progress = luasProgress * 100 / Float.parseFloat(tv_luas.getText().toString());
-
-                    int newProgress = Math.round(progress);
-                    tv_progress.setText("Progress has reached " + newProgress + "%");
-                }
-                catch (Exception e)
-                {
-
-                }
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-        });
         //-----END DECLARE---------------------------------------------------------------------------------------
-
-        String actionUrl = "Opname/getRabDetail/";
-        new get().execute( actionUrl );
 
         return v;
     }
@@ -257,21 +201,6 @@ public class FormOpname extends Fragment implements View.OnClickListener {
             btn_add.setVisibility(View.GONE);
         }
         else if(v.getId() == R.id.btn_send){
-            Float luasProgress = Float.parseFloat(et_progress.getText().toString());
-            Float progress = luasProgress * 100 / Float.parseFloat(tv_luas.getText().toString());
-
-            int newProgress = Math.round(progress);
-            if(newProgress<0 && newProgress>100)
-            {
-                Toast.makeText(getContext(), "Invalid input", Toast.LENGTH_LONG).show();
-                return;
-            }
-            else if(newProgress<oldProgress)
-            {
-                Toast.makeText(getContext(), "Progress less than old progress", Toast.LENGTH_LONG).show();
-                return;
-            }
-
             showLoading();
             photoName = "";
             for(int i=0;i<mPathRaw_.size();i++)
@@ -283,14 +212,8 @@ public class FormOpname extends Fragment implements View.OnClickListener {
                 }
             }
             Log.d("name", photoName);
-            String actionUrl = "Opname/createOpname/";
-            new createOpname().execute( actionUrl );
-
-//            Fragment fragment = new Sign();
-//            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-//            transaction.replace(R.id.fragment_container, fragment);
-//            transaction.addToBackStack(null);
-//            transaction.commit();
+            String actionUrl = "BeritaAcara/createPasang/";
+            new createPasang().execute( actionUrl );
         }
     }
 
@@ -484,69 +407,7 @@ public class FormOpname extends Fragment implements View.OnClickListener {
         void onFragmentInteraction(Uri uri);
     }
 
-    private class get extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... urls) {
-            try {
-                Index.jsonObject = new JSONObject();
-                Index.jsonObject.put("nomor_rab", nomor);
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-            return Index.globalfunction.executePost(urls[0], Index.jsonObject);
-        }
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            Log.d("result", result);
-            try {
-                JSONArray jsonarray = new JSONArray(result);
-                if(jsonarray.length() > 0){
-                    for (int i = jsonarray.length() - 1; i >= 0; i--) {
-                        JSONObject obj = jsonarray.getJSONObject(i);
-                        if(!obj.has("query")){
-                            String mandor = (obj.getString("mandor"));
-                            String volume = (obj.getString("volume"));
-                            String satuan = (obj.getString("satuan"));
-                            String progress = (obj.getString("progress"));
-
-                            oldProgress = Integer.parseInt(progress);
-
-                            tv_mandor.setText(mandor);
-                            tv_luas.setText(volume);
-                            tv_satuan.setText(satuan);
-                            tv_satuan.setText(satuan);
-                            tv_progress.setText("Progress has reached " + progress + "%");
-
-                            Float progressLuas = Float.parseFloat(volume) * Float.parseFloat(progress) / 100;
-                            et_progress.setText(String.valueOf(progressLuas));
-                        }
-                    }
-                }
-
-                hideLoading();
-            }catch(Exception e)
-            {
-                e.printStackTrace();
-                Toast.makeText(getContext(), "Load Failed", Toast.LENGTH_LONG).show();
-                hideLoading();
-            }
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-//            showLoading();
-        }
-    }
-
-    private class createOpname extends AsyncTask<String, Void, String> {
-        Float luasProgress = Float.parseFloat(et_progress.getText().toString());
-        Float progress = luasProgress * 100 / Float.parseFloat(tv_luas.getText().toString());
-
-        int newProgress = Math.round(progress);
+    private class createPasang extends AsyncTask<String, Void, String> {
         String nomor_bangunan = Index.globalfunction.getShared("bangunan", "nomorNow", "");
         String nomor_user = Index.globalfunction.getShared("user", "nomor", "");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -556,10 +417,8 @@ public class FormOpname extends Fragment implements View.OnClickListener {
         protected String doInBackground(String... urls) {
             try {
                 Index.jsonObject = new JSONObject();
-                Index.jsonObject.put("nomor_rab", nomor);
                 Index.jsonObject.put("nomor_bangunan", nomor_bangunan);
                 Index.jsonObject.put("nomor_user", nomor_user);
-                Index.jsonObject.put("progress", newProgress);
                 Index.jsonObject.put("tanggal", date);
                 Index.jsonObject.put("photo", photoName);
             } catch (JSONException e) {
@@ -573,26 +432,25 @@ public class FormOpname extends Fragment implements View.OnClickListener {
         @Override
         protected void onPostExecute(String result) {
             Log.d("result", result);
+            hideLoading();
             try {
                 JSONArray jsonarray = new JSONArray(result);
                 if(jsonarray.length() > 0){
                     for (int i = jsonarray.length() - 1; i >= 0; i--) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(obj.has("success")){
-                            hideLoading();
                             Index.fm.popBackStack(Index.fm.getBackStackEntryCount()-2, 0);
                         }
                         else
                         {
-                            Toast.makeText(getContext(), "Send Opname Failed", Toast.LENGTH_LONG).show();
-                            hideLoading();
+                            Toast.makeText(getContext(), "Send Photo Failed", Toast.LENGTH_LONG).show();
                         }
                     }
                 }
             }catch(Exception e)
             {
                 e.printStackTrace();
-                Toast.makeText(getContext(), "Send Opname Failed", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Send Photo Failed", Toast.LENGTH_LONG).show();
                 hideLoading();
             }
         }
@@ -600,7 +458,7 @@ public class FormOpname extends Fragment implements View.OnClickListener {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            showLoading();
+//            showLoading();
         }
     }
 

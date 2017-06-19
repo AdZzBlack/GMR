@@ -110,6 +110,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                             globalfunction.setShared("user", "role_opname", obj.getString("role_opname"));
                             globalfunction.setShared("user", "role_notabeli", obj.getString("role_notabeli"));
                             globalfunction.setShared("user", "role_map", obj.getString("role_map"));
+                            globalfunction.setShared("user", "role_pasang", obj.getString("role_pasang"));
 
                             Intent intent = new Intent(Login.this, Index.class);
                             startActivity(intent);
@@ -177,6 +178,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                             globalfunction.setShared("user", "role_opname", obj.getString("role_opname"));
                             globalfunction.setShared("user", "role_notabeli", obj.getString("role_notabeli"));
                             globalfunction.setShared("user", "role_map", obj.getString("role_map"));
+                            globalfunction.setShared("user", "role_pasang", obj.getString("role_pasang"));
 
                             hideLoading();
 
