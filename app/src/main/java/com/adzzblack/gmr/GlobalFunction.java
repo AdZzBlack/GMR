@@ -79,9 +79,15 @@ public class GlobalFunction {
         DecimalFormat format=new DecimalFormat("#,###.00");
 
         if(txt.equals("null")) return "-";
-        Double Raw = Double.parseDouble(txt);
-        String result = String.valueOf(format.format(Raw));
-        return result;
+        double Raw = Double.parseDouble(txt);
+
+        if(Raw == (long) Raw)
+            return String.format("%d",(long)Raw);
+        else
+            return String.format("%s",Raw);
+
+//        String result = String.valueOf(format.format(Raw));
+//        return result;
     }
 
     // Execute POST JSON and Retrieve Data JSON
@@ -98,8 +104,8 @@ public class GlobalFunction {
             // 1. create HttpClient
             HttpClient httpclient = new DefaultHttpClient();
             HttpParams httpParameters = httpclient.getParams();
-            HttpConnectionParams.setConnectionTimeout(httpParameters, 1000);
-            HttpConnectionParams.setSoTimeout(httpParameters, 1000);
+            HttpConnectionParams.setConnectionTimeout(httpParameters, 3000);
+            HttpConnectionParams.setSoTimeout(httpParameters, 3000);
             HttpConnectionParams.setTcpNoDelay(httpParameters, true);
 
             // 2. make POST request to the given URL

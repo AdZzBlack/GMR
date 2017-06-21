@@ -110,7 +110,7 @@ public class FormBPM extends Fragment implements View.OnClickListener {
                     String satuan = (obj.getString("satuan"));
                     String harga = (obj.getString("harga"));
                     String nomorbarang = (obj.getString("nomorbarang"));
-                    String nama = namabarang + " (" + jumlah + " " + satuan + ")";
+                    String nama = namabarang + " (" + GlobalFunction.delimeter(jumlah) + " " + satuan + ")";
 
                     itemadapter.add(new ItemDeliveryOrderAdapter(nomor, nama, jumlah, harga, nomorbarang));
                     itemadapter.notifyDataSetChanged();
@@ -290,7 +290,7 @@ public class FormBPM extends Fragment implements View.OnClickListener {
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            if(Integer.parseInt(input.getText().toString())<=Integer.parseInt(finalHolder.adapterItem.getJumlah()))
+                            if(Float.parseFloat(input.getText().toString())<=Float.parseFloat(finalHolder.adapterItem.getJumlah()))
                             {
                                 finalHolder.adapterItem.setJumlahBPM(input.getText().toString());
                             }
@@ -347,7 +347,7 @@ public class FormBPM extends Fragment implements View.OnClickListener {
 
         private void setupItem(Holder holder) {
             holder.nama.setText(holder.adapterItem.getNama());
-            holder.bpm.setText(holder.adapterItem.getJumlahBPM());
+            holder.bpm.setText(GlobalFunction.delimeter(holder.adapterItem.getJumlahBPM()));
             holder.keterangan.setText(holder.adapterItem.getKeterangan());
         }
     }

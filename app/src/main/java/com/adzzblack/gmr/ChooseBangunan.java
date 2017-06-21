@@ -181,6 +181,10 @@ public class ChooseBangunan extends Fragment implements View.OnClickListener {
                             itemadapter.add(new ItemBangunanAdapter(nomor, nama, status_anak, kode, tipe));
                             itemadapter.notifyDataSetChanged();
                         }
+                        else if(obj.getString("query").equals("no data"))
+                        {
+                            Toast.makeText(getContext(), "Elevasi not found", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
             }catch(Exception e)
@@ -359,6 +363,19 @@ public class ChooseBangunan extends Fragment implements View.OnClickListener {
                             transaction.addToBackStack(null);
                             transaction.commit();
                         }
+                    }
+                    else if(Index.globalfunction.getShared("global", "destination", "").equals("listelevasi"))
+                    {
+                        Index.globalfunction.setShared("bangunan", "before", Index.globalfunction.getShared("bangunan", "before", "0") + Index.globalfunction.getShared("bangunan", "header", "0") + ",");
+                        Index.globalfunction.setShared("bangunan", "nomorNow", finalHolder.adapterItem.getNomor());
+                        Index.globalfunction.setShared("bangunan", "kodeNow", finalHolder.adapterItem.getKode());
+                        Index.globalfunction.setShared("bangunan", "namaNow", finalHolder.adapterItem.getNama());
+
+                        Fragment fragment = new ChooseListElevasi();
+                        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.fragment_container, fragment);
+                        transaction.addToBackStack(null);
+                        transaction.commit();
                     }
                     else if(finalHolder.adapterItem.getStatusAnak().equals("1"))
                     {

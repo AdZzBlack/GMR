@@ -271,6 +271,16 @@ public class FormOpname extends Fragment implements View.OnClickListener {
                 Toast.makeText(getContext(), "Progress less than old progress", Toast.LENGTH_LONG).show();
                 return;
             }
+            else if(newProgress<0)
+            {
+                Toast.makeText(getContext(), "Progress couldn't less than 0", Toast.LENGTH_LONG).show();
+                return;
+            }
+            else if(newProgress>100)
+            {
+                Toast.makeText(getContext(), "Progress more than area", Toast.LENGTH_LONG).show();
+                return;
+            }
 
             showLoading();
             photoName = "";
@@ -600,7 +610,7 @@ public class FormOpname extends Fragment implements View.OnClickListener {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            showLoading();
+//            showLoading();
         }
     }
 

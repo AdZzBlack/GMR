@@ -323,6 +323,16 @@ public class Index extends AppCompatActivity implements NavigationView.OnNavigat
         } else if (id == R.id.nav_logout) {
             String actionUrl = "Login/logoutUser/";
             new logout().execute(actionUrl);
+        } else if (id == R.id.nav_list_elevasi) {
+            Index.globalfunction.setShared("bangunan", "header", "0");
+            Index.globalfunction.setShared("bangunan", "before", "");
+            Index.globalfunction.setShared("global", "destination", "listelevasi");
+
+            Fragment fragment = new ChooseBangunan();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

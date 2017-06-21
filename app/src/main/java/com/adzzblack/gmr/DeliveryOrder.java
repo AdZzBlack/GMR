@@ -159,7 +159,7 @@ public class DeliveryOrder extends Fragment implements View.OnClickListener {
 
         nomor = Index.globalfunction.getShared("rab", "nomorbarang", "");
         nama = Index.globalfunction.getShared("rab", "namabarang", "");
-        waste = Index.globalfunction.getShared("rab", "waste", "");
+        waste = Index.globalfunction.getShared("rab", "waste", "0");
         need = Index.globalfunction.getShared("rab", "jumlah", "");
         delivery = Index.globalfunction.getShared("rab", "delivery", "");
         satuan = Index.globalfunction.getShared("rab", "satuan", "");
@@ -170,14 +170,16 @@ public class DeliveryOrder extends Fragment implements View.OnClickListener {
         Float wasteFloat = Float.parseFloat(Index.globalfunction.getShared("rab", "waste", "0")) * needFloat / 100;
 
         tv_item.setText(nama);
-        tv_need.setText(need);
-        tv_delivery.setText(delivery);
+        if(need.equals("")) tv_need.setText(need);
+        else tv_need.setText(GlobalFunction.delimeter(need));
+        if(delivery.equals("")) tv_delivery.setText(delivery);
+        else tv_delivery.setText(GlobalFunction.delimeter(delivery));
         tv_satuan1.setText(satuan);
         tv_satuan2.setText(satuan);
         tv_satuan3.setText(satuan);
         tv_keterangan.setText(keterangan);
         if(keterangan.equals("")) tr_keterangan.setVisibility(View.GONE);
-        tv_waste.setText(waste + "% (" + wasteFloat + " " + satuan + ")");
+        tv_waste.setText(waste + "% (" + GlobalFunction.delimeter(String.valueOf(wasteFloat)) + " " + satuan + ")");
 
         btn_order.setOnClickListener(this);
         btn_orderall.setOnClickListener(this);
@@ -255,8 +257,15 @@ public class DeliveryOrder extends Fragment implements View.OnClickListener {
             }
         }
         else if(v.getId() == R.id.btn_orderall){
-            String actionUrl = "DeliveryOrder/createDeliveryOrder/";
-            new createDO().execute( actionUrl );
+            if(!Index.globalfunction.getShared("rab", "listorder", "").equals(""))
+            {
+                String actionUrl = "DeliveryOrder/createDeliveryOrder/";
+                new createDO().execute( actionUrl );
+            }
+            else
+            {
+                Toast.makeText(getContext(), "Delivery order can't be empty", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -265,7 +274,7 @@ public class DeliveryOrder extends Fragment implements View.OnClickListener {
         String nomorbarang = Index.globalfunction.getShared("rab", "nomorbarang", "");
         String namabarang = Index.globalfunction.getShared("rab", "namabarang", "");
         String jumlah = et_order.getText().toString();
-        String keterangan = et_order.getText().toString() + " " + Index.globalfunction.getShared("rab", "satuan", "");
+        String keterangan = GlobalFunction.delimeter(et_order.getText().toString()) + " " + Index.globalfunction.getShared("rab", "satuan", "");
         String catatan = "";
 
         if(m_Text.equals("")) catatan = "0";

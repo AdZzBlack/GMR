@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="CASADOMAIN/Tower 2/Lantai 5/Unit A/Common Bath Unit A"
+            android:id="@+id/tv_bangunan"
+            android:layout_margin="5dp"
+            android:textSize="6pt"
+            android:gravity="center_vertical"/>
+
+        <Button
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/btn_image"
+            android:text="image"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_below="@+id/tv_bangunan"
+            android:layout_alignParentRight="true"
+            android:textSize="5pt"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_below="@+id/tv_bangunan"
+            android:text="Elevasi :"
+            android:id="@+id/tv_elevasi_title"
+            android:layout_margin="5dp"
+            android:textSize="5pt"
+            android:gravity="center_vertical"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_below="@+id/tv_bangunan"
+            android:text="0"
+            android:id="@+id/tv_elevasi"
+            android:layout_marginTop="3dp"
+            android:textSize="6pt"
+            android:layout_toRightOf="@+id/tv_elevasi_title"
+
+            android:gravity="center_vertical"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_below="@+id/tv_elevasi"
+            android:text="Keterangan :"
+            android:id="@+id/tv_keterangan_title"
+            android:textSize="5pt"
+            android:layout_margin="5dp"
+            android:layout_toLeftOf="@id/btn_image"
+            android:gravity="center_vertical"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_below="@+id/tv_keterangan_title"
+            android:text="OK"
+            android:id="@+id/tv_keterangan"
+            android:textSize="6pt"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_toLeftOf="@id/btn_image"
+            android:gravity="center_vertical"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_below="@+id/btn_image"
+            android:text="Tidak Disetujui"
+            android:id="@+id/tv_setuju"
+            android:textSize="4pt"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="2dp"
+            android:textAlignment="center"
+            android:gravity="center_vertical"
+            android:layout_alignStart="@id/btn_image" />
+
+    </RelativeLayout>
+</RelativeLayout>

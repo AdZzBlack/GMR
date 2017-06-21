@@ -372,7 +372,7 @@ public class ChoosePrintDelivery extends Fragment implements View.OnClickListene
                         cell = new PdfPCell(new Phrase(item, f));
                         table.addCell(cell);
 
-                        cell = new PdfPCell(new Phrase(jumlahorder + " " + satuan, f));
+                        cell = new PdfPCell(new Phrase(GlobalFunction.delimeter(jumlahorder) + " " + satuan, f));
                         table.addCell(cell);
 
                         cell = new PdfPCell(new Phrase(catatan, f));

@@ -29,10 +29,6 @@
             android:icon="@drawable/delivery"
             android:title="Approval Over DO" />
         <item
-            android:id="@+id/nav_opname"
-            android:icon="@drawable/opname"
-            android:title="Opname List" />
-        <item
             android:id="@+id/nav_pasang"
             android:icon="@drawable/pasangnomor"
             android:title="Galery BA Pasang" />
@@ -53,6 +49,25 @@
                 app:actionViewClass="android.widget.TextView"
                 android:icon="@drawable/delivery"
                 android:title="Disapproved DO" />
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/nav_list"
+        android:title="List">
+        <menu>
+            <item
+                android:id="@+id/nav_list_elevasi"
+                android:icon="@drawable/opname"
+                android:title="List Elevasi" />
+            <item
+                android:id="@+id/nav_list_bpm"
+                android:icon="@drawable/opname"
+                android:title="List BPM" />
+            <item
+                android:id="@+id/nav_opname"
+                android:icon="@drawable/opname"
+                android:title="List Opname" />
         </menu>
     </item>
 

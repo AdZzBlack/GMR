@@ -122,6 +122,12 @@ public class ChooseDeliveryOrder extends Fragment implements View.OnClickListene
         @Override
         protected void onPostExecute(String result) {
             Log.d("result", result);
+            if(result.equals(""))
+            {
+                hideLoading();
+                return;
+            }
+
             try {
                 JSONArray jsonarray = new JSONArray(result);
                 if(jsonarray.length() > 0){
@@ -314,7 +320,7 @@ public class ChooseDeliveryOrder extends Fragment implements View.OnClickListene
                         String namabarang = (obj.getString("nama"));
                         String jumlah = (obj.getString("jumlah"));
                         String satuan = (obj.getString("satuan"));
-                        String keterangan = jumlah + " " + satuan;
+                        String keterangan = GlobalFunction.delimeter(jumlah) + " " + satuan;
 
                         holder.griditemadapter.add(new ItemAdapter1(namabarang, keterangan));
                         holder.griditemadapter.notifyDataSetChanged();

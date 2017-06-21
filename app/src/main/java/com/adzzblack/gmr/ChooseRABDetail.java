@@ -329,7 +329,7 @@ public class ChooseRABDetail extends Fragment implements View.OnClickListener {
         private void setupItem(Holder holder) {
             holder.nomor.setText(holder.adapterItem.getNomor());
             holder.nama.setText(holder.adapterItem.getNamaBarang());
-            holder.keterangan.setText("Need: " + holder.adapterItem.getJumlah() + " " + holder.adapterItem.getSatuan() + "  ---  Ordered: " + holder.adapterItem.getDelivery() + " " + holder.adapterItem.getSatuan());
+            holder.keterangan.setText("Need: " + GlobalFunction.delimeter(holder.adapterItem.getJumlah()) + " " + holder.adapterItem.getSatuan() + "  ---  Ordered: " + GlobalFunction.delimeter(holder.adapterItem.getDelivery()) + " " + holder.adapterItem.getSatuan());
         }
     }
 }

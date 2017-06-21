@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -430,6 +431,9 @@ public class Sign extends Fragment {
                 Log.e("PDFCreator", "DocumentException:" + de);
             } finally {
                 doc.close();
+
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                fm.popBackStack(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             }
         } catch (Exception e) {
             e.printStackTrace();
