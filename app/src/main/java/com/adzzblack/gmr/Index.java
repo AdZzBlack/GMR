@@ -195,7 +195,11 @@ public class Index extends AppCompatActivity implements NavigationView.OnNavigat
                 transaction.addToBackStack(null);
                 transaction.commit();
             } else if (menuFragment.equals("DeliveryOrderApproved")) {
-                fragment = new ChoosePrintDelivery();
+                Index.globalfunction.setShared("bangunan", "header", "0");
+                Index.globalfunction.setShared("bangunan", "before", "");
+                Index.globalfunction.setShared("global", "destination", "deliveryorderapproved");
+
+                fragment = new ChooseBangunan();
                 transaction = this.getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.fragment_container, fragment);
                 transaction.addToBackStack(null);
@@ -297,7 +301,11 @@ public class Index extends AppCompatActivity implements NavigationView.OnNavigat
             transaction.addToBackStack(null);
             transaction.commit();
         } else if (id == R.id.nav_approved_order) {
-            Fragment fragment = new ChoosePrintDelivery();
+            Index.globalfunction.setShared("bangunan", "header", "0");
+            Index.globalfunction.setShared("bangunan", "before", "");
+            Index.globalfunction.setShared("global", "destination", "deliveryorderapproved");
+
+            Fragment fragment = new ChooseBangunan();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);

@@ -527,7 +527,7 @@ public class FormOpname extends Fragment implements View.OnClickListener {
                             tv_mandor.setText(mandor);
                             tv_luas.setText(volume);
                             tv_satuan.setText(satuan);
-                            tv_satuan.setText(satuan);
+                            tv_satuan1.setText(satuan);
                             tv_progress.setText("Progress has reached " + progress + "%");
 
                             Float progressLuas = Float.parseFloat(volume) * Float.parseFloat(progress) / 100;

@@ -163,6 +163,7 @@ public class ChoosePrintDelivery extends Fragment implements View.OnClickListene
             try {
                 Index.jsonObject = new JSONObject();
                 Index.jsonObject.put("user_nomor", Index.globalfunction.getShared("user", "nomor", ""));
+                Index.jsonObject.put("nomor_project", Index.globalfunction.getShared("bangunan", "nomorNow", ""));
                 Index.jsonObject.put("search", search);
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
@@ -253,9 +254,10 @@ public class ChoosePrintDelivery extends Fragment implements View.OnClickListene
                             Index.globalfunction.setShared("global", "print_nomorth", nomor);
                             Index.globalfunction.setShared("global", "print_data", datalistbarang);
 
-                            Fragment fragment = new Sign();
+                            Fragment fragment = new ViewDeliveryOrder();
                             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                             transaction.replace(R.id.fragment_container, fragment);
+                            transaction.addToBackStack(null);
                             transaction.commit();
                         }
                         else

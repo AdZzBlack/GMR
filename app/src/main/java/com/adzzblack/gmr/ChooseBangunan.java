@@ -83,30 +83,6 @@ public class ChooseBangunan extends Fragment implements View.OnClickListener {
                 TextView tv_nama = (TextView) v.findViewById(R.id.tv_nama);
             }
         });
-        lv_choose.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-            }
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-                // Scroll Down
-                int lastInScreen = firstVisibleItem + visibleItemCount;
-                if((lastInScreen == totalItemCount) && totalItemCount != 0){
-                    if(scroll == true)
-                    {
-                        scroll = false;
-                        counter += 1;
-
-                        String actionUrl = "Master/alldatabangunan/";
-                        new search().execute( actionUrl );
-                    }
-                }
-            }
-
-        });
-        //-----END DECLARE---------------------------------------------------------------------------------------
 
         scroll = false;
         String actionUrl = "Master/alldatabangunan/";
@@ -154,6 +130,11 @@ public class ChooseBangunan extends Fragment implements View.OnClickListener {
                 {
                     Index.jsonObject.put("check_elevasi", "1");
                 }
+                else if(Index.globalfunction.getShared("global", "destination", "").equals("deliveryorderapproved"))
+                {
+                    Index.jsonObject.put("need_count_do", "1");
+                    Index.jsonObject.put("user_nomor", Index.globalfunction.getShared("user", "nomor", ""));
+                }
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -177,8 +158,11 @@ public class ChooseBangunan extends Fragment implements View.OnClickListener {
                             String status_anak = (obj.getString("status_anak"));
                             String kode = (obj.getString("kode"));
                             String tipe = (obj.getString("tipe"));
+                            String notif = "0";
 
-                            itemadapter.add(new ItemBangunanAdapter(nomor, nama, status_anak, kode, tipe));
+                            if(obj.has("order_approved_baru")) notif = (obj.getString("order_approved_baru"));
+
+                            itemadapter.add(new ItemBangunanAdapter(nomor, nama, status_anak, kode, tipe, notif));
                             itemadapter.notifyDataSetChanged();
                         }
                         else if(obj.getString("query").equals("no data"))
@@ -223,13 +207,15 @@ public class ChooseBangunan extends Fragment implements View.OnClickListener {
         private String status_anak;
         private String kode;
         private String tipe;
+        private String notif;
 
-        public ItemBangunanAdapter(String nomor, String nama, String status_anak, String kode, String tipe) {
+        public ItemBangunanAdapter(String nomor, String nama, String status_anak, String kode, String tipe, String notif) {
             this.setNomor(nomor);
             this.setNama(nama);
             this.setStatusAnak(status_anak);
             this.setKode(kode);
             this.setTipe(tipe);
+            this.setNotif(notif);
         }
 
         public String getNomor() {
@@ -263,6 +249,12 @@ public class ChooseBangunan extends Fragment implements View.OnClickListener {
         public void setTipe(String tipe) {
             this.tipe = tipe;
         }
+
+        public String getNotif() {return notif;}
+
+        public void setNotif(String notif) {
+            this.notif = notif;
+        }
     }
 
     class ItemListBangunanAdapter extends ArrayAdapter<ItemBangunanAdapter> {
@@ -284,6 +276,7 @@ public class ChooseBangunan extends Fragment implements View.OnClickListener {
             TextView nomor;
             TextView nama;
             ImageView map;
+            TextView notif;
         }
 
         @Override
@@ -300,6 +293,7 @@ public class ChooseBangunan extends Fragment implements View.OnClickListener {
             holder.nomor = (TextView)row.findViewById(R.id.tv_nomor);
             holder.nama = (TextView)row.findViewById(R.id.tv_nama);
             holder.map = (ImageView)row.findViewById(R.id.iv_map);
+            holder.notif = (TextView)row.findViewById(R.id.tv_notif);
 
             row.setTag(holder);
             setupItem(holder);
@@ -377,6 +371,19 @@ public class ChooseBangunan extends Fragment implements View.OnClickListener {
                         transaction.addToBackStack(null);
                         transaction.commit();
                     }
+                    else if(Index.globalfunction.getShared("global", "destination", "").equals("deliveryorderapproved"))
+                    {
+                        Index.globalfunction.setShared("bangunan", "before", Index.globalfunction.getShared("bangunan", "before", "0") + Index.globalfunction.getShared("bangunan", "header", "0") + ",");
+                        Index.globalfunction.setShared("bangunan", "nomorNow", finalHolder.adapterItem.getNomor());
+                        Index.globalfunction.setShared("bangunan", "kodeNow", finalHolder.adapterItem.getKode());
+                        Index.globalfunction.setShared("bangunan", "namaNow", finalHolder.adapterItem.getNama());
+
+                        Fragment fragment = new ChoosePrintDelivery();
+                        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.fragment_container, fragment);
+                        transaction.addToBackStack(null);
+                        transaction.commit();
+                    }
                     else if(finalHolder.adapterItem.getStatusAnak().equals("1"))
                     {
                         Index.globalfunction.setShared("bangunan", "before", Index.globalfunction.getShared("bangunan", "before", "0") + Index.globalfunction.getShared("bangunan", "header", "0") + ",");
@@ -425,6 +432,11 @@ public class ChooseBangunan extends Fragment implements View.OnClickListener {
                 }
             }
 
+            if(!holder.adapterItem.getNotif().equals("0"))
+            {
+                holder.notif.setVisibility(View.VISIBLE);
+                holder.notif.setText(holder.adapterItem.getNotif());
+            }
         }
     }
 }
