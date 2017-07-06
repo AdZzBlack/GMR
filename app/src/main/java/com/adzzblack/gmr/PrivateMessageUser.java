@@ -102,6 +102,7 @@ public class PrivateMessageUser extends Fragment implements View.OnClickListener
         };
         t.start();
 
+        running = true;
         return v;
     }
 

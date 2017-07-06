@@ -372,7 +372,11 @@ public class Index extends AppCompatActivity implements NavigationView.OnNavigat
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            Index.globalfunction.setShared("message","userto_nomor","");
+            if(Index.globalfunction.getShared("message","forwardmessage_nomor", "").length() > 0){
+
+            }else {
+                Index.globalfunction.setShared("message","userto_nomor","");
+            }
             if (fm.getBackStackEntryCount() > 0) {
                 fm.popBackStack();
             } else {

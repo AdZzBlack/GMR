@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/GMR.iml" filepath="$PROJECT_DIR$/GMR.iml" />
+      <module fileurl="file://$PROJECT_DIR$/GMR-git.iml" filepath="$PROJECT_DIR$/GMR-git.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
