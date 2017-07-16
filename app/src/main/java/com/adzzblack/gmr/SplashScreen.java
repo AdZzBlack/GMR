@@ -32,23 +32,23 @@ public class SplashScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splashscreen);
 
-        globalfunction = new GlobalFunction(this);
-        globalfunction.setShared("server", "servernow", "gmr.inspiraworld.com");
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                globalfunction = new GlobalFunction(SplashScreen.this);
+                globalfunction.setShared("server", "servernow", "gmr.inspiraworld.com");
+
+                sharedpreferences = getSharedPreferences("shortcut", Context.MODE_PRIVATE);
+                isAppInstalled  = sharedpreferences.getString("isAppInstalled", "");
+
+                if (!isAppInstalled.equals("true")) {
+                    addShortcutIcon();
+                }
+
                 String actionUrl = "Login/getVersion/";
                 new getVersion().execute( actionUrl );
             }
         }, timeout);
-
-        sharedpreferences = getSharedPreferences("shortcut", Context.MODE_PRIVATE);
-        isAppInstalled  = sharedpreferences.getString("isAppInstalled", "");
-
-        if (!isAppInstalled.equals("true")) {
-            addShortcutIcon();
-        }
     }
 
     public void addShortcutIcon() {
