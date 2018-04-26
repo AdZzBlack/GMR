@@ -2,6 +2,8 @@ package com.adzzblack.gmr;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.util.Log;
 
 import org.apache.http.HttpResponse;
@@ -27,6 +29,7 @@ public class GlobalFunction {
     private static Context context;
     private static String hostUrl;
     private static String uploadUrl;
+    private static String uploadPdfUrl;
     private static String imageUrl;
     private static String serverimageUrl;
 
@@ -47,6 +50,7 @@ public class GlobalFunction {
         return hostUrl;
     }
     public static String getUploadURL() { return uploadUrl;}
+    public static String getUploadPDFURL() { return uploadPdfUrl;}
     public static String getImageURL() { return imageUrl;}
     public static String getServerImageURL() { return serverimageUrl;}
     public static String getClassDialog() { return classDialog; }
@@ -70,6 +74,7 @@ public class GlobalFunction {
         String url = getShared("server", "servernow", "");
         hostUrl = "http://" + url + "/wsGMR/gmr/index.php/api/";
         uploadUrl = "http://" + url + "/wsGMR/upload.php";
+        uploadPdfUrl = "http://" + url + "/gmr/upload.php";
         imageUrl = "http://" + url + "/wsGMR/uploads/";
         serverimageUrl = "http://" + url + "/gmr/uploads/";
     }
@@ -88,6 +93,20 @@ public class GlobalFunction {
 
 //        String result = String.valueOf(format.format(Raw));
 //        return result;
+    }
+
+    public static String getVersion(Context _context)
+    {
+        String version = "";
+        try
+        {
+            PackageInfo pInfo = _context.getPackageManager().getPackageInfo(_context.getPackageName(), 0);
+            version = pInfo.versionName;
+        }
+        catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return version;
     }
 
     // Execute POST JSON and Retrieve Data JSON
@@ -141,7 +160,8 @@ public class GlobalFunction {
                 result = "Did not work!";
 
         } catch (Exception e) {
-            Log.d("InputStream", e.getLocalizedMessage());
+//            Log.d("InputStream", e.getLocalizedMessage());
+            Log.d("InputStream", "error");
         }
 
         // 11. return result

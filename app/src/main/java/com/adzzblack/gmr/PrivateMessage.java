@@ -621,7 +621,7 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
 
     /*--------------------------MESSAGE----------------------*/
     private class sendMessage extends AsyncTask<String, Void, String> {
-        String userfrom_nomor = Index.globalfunction.getShared("user","id","");
+        String userfrom_nomor = Index.globalfunction.getShared("user","nomor","");
         String userto_nomor = Index.globalfunction.getShared("message","userto_nomor","");
         String new_message = et_newmessage.getText().toString();
         String url = null;
@@ -710,7 +710,7 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
     }
 
     private class getMessage extends AsyncTask<String, Void, String> {
-        String userfrom_nomor = Index.globalfunction.getShared("user","id","");
+        String userfrom_nomor = Index.globalfunction.getShared("user","nomor","");
         String userto_nomor = Index.globalfunction.getShared("message","userto_nomor","");
 
         @Override
@@ -782,7 +782,7 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         Date newdate = sdf.parse(date);
                         date = sdf.format(newdate);
-                        String userid = Index.globalfunction.getShared("user","id","");
+                        String userid = Index.globalfunction.getShared("user","nomor","");
                         if (userid.equals(userfrom_nomor)) {
                             userfrom_nama = "You";
                             messageadapter.add(new PrivateMessageAdapter(nomor, userfrom_nama, message, tipe, url, date, status));
@@ -841,7 +841,7 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         Date newdate = sdf.parse(date);
                         date = sdf.format(newdate);
-                        String userid = Index.globalfunction.getShared("user","id","");
+                        String userid = Index.globalfunction.getShared("user","nomor","");
                         if (userid.equals(userfrom_nomor)) {
                             userfrom_nama = "You";
                             messageadapter.insert(new PrivateMessageAdapter(nomor, userfrom_nama, message, tipe, url, date, status), 0);
@@ -880,7 +880,7 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
     }
 
     private class readPrivateMessage extends AsyncTask<String, Void, String> {
-        String userfrom_nomor = Index.globalfunction.getShared("user","id","");
+        String userfrom_nomor = Index.globalfunction.getShared("user","nomor","");
         String userto_nomor = Index.globalfunction.getShared("message","userto_nomor","");
 
         @Override
@@ -898,7 +898,7 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
     }
 
     private class checkNewMessage extends AsyncTask<String, Void, String> {
-        String userfrom_nomor = Index.globalfunction.getShared("user","id","");
+        String userfrom_nomor = Index.globalfunction.getShared("user","nomor","");
         String userto_nomor = Index.globalfunction.getShared("message","userto_nomor","");
 
         @Override
@@ -938,7 +938,7 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                             Date newdate = sdf.parse(date);
                             date = sdf.format(newdate);
-                            String userid = Index.globalfunction.getShared("user","id","");
+                            String userid = Index.globalfunction.getShared("user","nomor","");
                             if (userid.equals(userfrom_nomor)) {
                                 userfrom_nama = "You";
                             } else {
@@ -1695,7 +1695,7 @@ public class PrivateMessage extends Fragment implements View.OnClickListener {
                                         String url = (obj.getString("url"));
                                         String tipe = (obj.getString("tipe"));
                                         holder.namereply.setText("You");
-                                        String userid = Index.globalfunction.getShared("user","id","");
+                                        String userid = Index.globalfunction.getShared("user","nomor","");
                                         if (!userid.equals(userfrom_nomor)) {
                                             String upper_nama = userfrom_nama.substring(0, 1).toUpperCase() + userfrom_nama.substring(1);
                                             holder.namereply.setText(upper_nama);

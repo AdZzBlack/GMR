@@ -32,6 +32,10 @@ public class DrawFinger1 extends Fragment {
     private MyView mView;
     Bitmap mBitmap;
 
+    public DrawFinger1()
+    {
+    }
+
     @SuppressLint("ValidFragment")
     public DrawFinger1(Bitmap b)
     {

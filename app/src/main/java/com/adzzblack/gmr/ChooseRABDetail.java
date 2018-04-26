@@ -125,7 +125,6 @@ public class ChooseRABDetail extends Fragment implements View.OnClickListener {
                             String waste = (obj.getString("waste"));
                             String keterangan = (obj.getString("keterangan"));
 
-
                             itemadapter.add(new ItemRABDetailAdapter(nomor, nomorbarang, namabarang, satuan, jumlah, delivery, harga, waste, keterangan));
                             itemadapter.notifyDataSetChanged();
                         }

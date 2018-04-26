@@ -5,20 +5,17 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,15 +27,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CreateCreditNote extends Fragment implements View.OnClickListener {
+public class ChooseDetailCreditNote extends Fragment implements View.OnClickListener {
 
     private ItemListOpnameAdapter itemadapter;
 
     private ListView lv_choose;
 
-    private String nomor;
-
-    private Button btn_create;
+    private Button btn_delete;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,22 +43,22 @@ public class CreateCreditNote extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.choose_opname, container, false);
-        getActivity().setTitle("Opname Result");
+        View v = inflater.inflate(R.layout.choose_detail_creditnote, container, false);
+        getActivity().setTitle("Detail Credit Note");
 
         //-----START DECLARE---------------------------------------------------------------------------------------
         itemadapter = new ItemListOpnameAdapter(getActivity(), R.layout.list_opname, new ArrayList<ItemOpnameAdapter>());
         lv_choose = (ListView) v.findViewById(R.id.lv_choose);
         lv_choose.setAdapter(itemadapter);
-        btn_create = (Button) v.findViewById(R.id.btn_create);
-        btn_create.setOnClickListener(this);
+        btn_delete = (Button) v.findViewById(R.id.btn_delete);
+        btn_delete.setOnClickListener(this);
 
         if (Index.globalfunction.getShared("user", "role_notabeli", "0").equals("0")) {
-            btn_create.setVisibility(View.GONE);
+            btn_delete.setVisibility(View.GONE);
         }
         //-----END DECLARE---------------------------------------------------------------------------------------
 
-        String actionUrl = "Opname/getOpname/";
+        String actionUrl = "Master/alldatacreditnotedetail/";
         new search().execute( actionUrl );
 
         return v;
@@ -71,24 +66,9 @@ public class CreateCreditNote extends Fragment implements View.OnClickListener {
 
     public void onClick(View v) {
         v.startAnimation(Index.buttoneffect);
-        if(v.getId() == R.id.btn_create){
-            String nomor = "";
-            for(int i=0;i<itemadapter.getCount();i++)
-            {
-                if(itemadapter.getItem(i).getIsChoosen())
-                {
-                    nomor = nomor + itemadapter.getItem(i).getNomor() + "|";
-                }
-            }
-            if(!nomor.equals(""))
-            {
-                String actionUrl = "Opname/createCreditNote/";
-                new createCreditNote(nomor).execute( actionUrl );
-            }
-            else
-            {
-                Toast.makeText(getContext(), "Choose min 1 opname", Toast.LENGTH_LONG).show();
-            }
+        if(v.getId() == R.id.btn_delete){
+            String actionUrl = "Opname/deleteCreditNote/";
+            new deleteCreditNote().execute( actionUrl );
         }
     }
 
@@ -105,6 +85,12 @@ public class CreateCreditNote extends Fragment implements View.OnClickListener {
         @Override
         protected String doInBackground(String... urls) {
             Index.jsonObject = new JSONObject();
+            try {
+                Index.jsonObject.put("nomor", Index.globalfunction.getShared("global", "temp", "0"));
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             return Index.globalfunction.executePost(urls[0], Index.jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
@@ -148,20 +134,13 @@ public class CreateCreditNote extends Fragment implements View.OnClickListener {
         }
     }
 
-    private class createCreditNote extends AsyncTask<String, Void, String> {
-        String nomor;
-
-        public createCreditNote(String _nomor)
-        {
-            nomor = _nomor;
-        }
-
+    private class deleteCreditNote extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
+            Index.jsonObject = new JSONObject();
             try {
-                Index.jsonObject = new JSONObject();
+                Index.jsonObject.put("nomor", Index.globalfunction.getShared("global", "temp", "0"));
                 Index.jsonObject.put("nomor_user", Index.globalfunction.getShared("user", "nomor", ""));
-                Index.jsonObject.put("nomor", nomor);
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -179,7 +158,7 @@ public class CreateCreditNote extends Fragment implements View.OnClickListener {
                     for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(obj.has("success")){
-                            Toast.makeText(getContext(), "Create Credit Note Success", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "Delete Credit Note Success", Toast.LENGTH_LONG).show();
                             Fragment fragment = new Dashboard();
                             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                             transaction.replace(R.id.fragment_container, fragment);
@@ -187,7 +166,7 @@ public class CreateCreditNote extends Fragment implements View.OnClickListener {
                         }
                         else
                         {
-                            Toast.makeText(getContext(), "Create Credit Note Failed", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "Delete Credit Note Failed", Toast.LENGTH_LONG).show();
                         }
                     }
                 }
@@ -196,7 +175,7 @@ public class CreateCreditNote extends Fragment implements View.OnClickListener {
             }catch(Exception e)
             {
                 e.printStackTrace();
-                Toast.makeText(getContext(), "Create Credit Note Failed", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Delete Credit Note Failed", Toast.LENGTH_LONG).show();
                 hideLoading();
             }
         }
@@ -365,78 +344,7 @@ public class CreateCreditNote extends Fragment implements View.OnClickListener {
             holder.volume = (TextView)row.findViewById(R.id.tv_progress_angka);
             holder.btnReject = (Button) row.findViewById(R.id.btn_reject);
 
-            final Holder finalHolder = holder;
-            final View finalRow = row;
-            row.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(finalHolder.adapterItem.getIsChoosen())
-                    {
-                        finalHolder.adapterItem.setIsChoosen(false);
-                    }
-                    else
-                    {
-                        finalHolder.adapterItem.setIsChoosen(true);
-                    }
-                    setupItem(finalHolder, finalRow);
-                }
-            });
-            holder.btnReject.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    builder.setTitle("Reject Progress");
-
-                    // Set up the buttons
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            String actionUrl = "Opname/rejectProgress/";
-                            new reject(finalHolder.adapterItem.getNomor()).execute( actionUrl );
-                        }
-                    });
-                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-
-                    builder.show();
-                }
-            });
-//            holder.progress.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-//                    builder.setTitle("Edit Progress");
-////                    builder.setMessage("Order quantity exceed, are you sure want to order? this order need Owner approval, give note to Owner");
-//
-//                    // Set up the input
-//                    final EditText input = new EditText(getContext());
-//                    // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-//                    input.setInputType(InputType.TYPE_CLASS_NUMBER);
-//                    input.setText(finalHolder.adapterItem.getProgress());
-//                    builder.setView(input);
-//
-//                    // Set up the buttons
-//                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            String actionUrl = "Opname/editProgress/";
-//                            new edit(finalHolder, input.getText().toString()).execute( actionUrl );
-//                        }
-//                    });
-//                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            dialog.cancel();
-//                        }
-//                    });
-//
-//                    builder.show();
-//                }
-//            });
+            holder.btnReject.setVisibility(View.GONE);
 
             row.setTag(holder);
             setupItem(holder, row);

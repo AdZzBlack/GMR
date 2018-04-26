@@ -185,6 +185,7 @@ public class ChooseApprovalElevasi extends Fragment implements View.OnClickListe
             try {
                 Index.jsonObject = new JSONObject();
                 Index.jsonObject.put("nomor", nomor);
+                Index.jsonObject.put("cabang", Index.globalfunction.getShared("user", "cabang", "0"));
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

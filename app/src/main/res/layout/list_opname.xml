@@ -41,43 +41,39 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="Pekerjaan"
                     android:layout_marginLeft="5dp"
-                    android:gravity="center_vertical"/>
+                    android:gravity="center_vertical"
+                    android:textSize="15dp"/>
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".5"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text=" : "
                     android:textColor="@color/colorPrimaryDark"
-                    android:gravity="center_vertical"/>
+                    android:gravity="center_vertical"
+                    android:textSize="15dp"/>
 
                 <TextView
                     android:id="@+id/tv_pekerjaan"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/colorPrimaryDark"
-                    android:gravity="center_vertical"/>
+                    android:gravity="center_vertical"
+                    android:textSize="15dp"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:layout_weight="0.1"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:gravity="center"/>
             </TableRow>
 
             <TableRow
@@ -87,38 +83,34 @@
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="Mandor"
                     android:layout_marginLeft="5dp"
-                    android:gravity="center_vertical"/>
+                    android:gravity="center_vertical"
+                    android:textSize="15dp"/>
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".5"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text=" : "
                     android:textColor="@color/colorPrimaryDark"
-                    android:gravity="center_vertical"/>
+                    android:gravity="center_vertical"
+                    android:textSize="15dp"/>
 
                 <TextView
                     android:id="@+id/tv_mandor"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/colorPrimaryDark"
-                    android:gravity="center_vertical"/>
+                    android:gravity="center_vertical"
+                    android:textSize="15dp"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:layout_weight="0.1"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:gravity="center"/>
             </TableRow>
 
             <TableRow
@@ -128,47 +120,34 @@
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="Tanggal"
                     android:layout_marginLeft="5dp"
-                    android:gravity="center_vertical"/>
+                    android:gravity="center_vertical"
+                    android:textSize="15dp"/>
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".5"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text=" : "
                     android:textColor="@color/colorPrimaryDark"
-                    android:gravity="center_vertical"/>
+                    android:gravity="center_vertical"
+                    android:textSize="15dp"/>
 
                 <TextView
                     android:id="@+id/tv_tanggal"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:gravity="center_vertical"/>
-
-                <TextView
-                    android:id="@+id/tv_satuan1"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:gravity="center_vertical"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:layout_weight="0.1"
+                    android:layout_weight="3"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:gravity="center"/>
+                    android:textColor="@color/colorPrimaryDark"
+                    android:gravity="center_vertical"
+                    android:textSize="15dp"/>
+
             </TableRow>
 
             <TableRow
@@ -178,66 +157,109 @@
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="Progress"
                     android:layout_marginLeft="5dp"
-                    android:gravity="center_vertical"/>
+                    android:gravity="center_vertical"
+                    android:textSize="15dp"/>
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".5"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text=" : "
                     android:textColor="@color/colorPrimaryDark"
-                    android:gravity="center_vertical"/>
+                    android:gravity="center_vertical"
+                    android:textSize="15dp"/>
 
                 <TextView
                     android:id="@+id/tv_progress"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2.5"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/colorPrimaryDark"
                     android:gravity="center_vertical"
-                    style="@android:style/Widget.Button"
-                    android:inputType="numberDecimal"/>
+                    android:inputType="numberDecimal"
+                    android:textSize="15dp"/>
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".5"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/colorPrimaryDark"
                     android:text="%"
-                    android:gravity="center_vertical"/>
+                    android:gravity="center_vertical"
+                    android:textSize="15dp"/>
+
+            </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:layout_weight="0.1"
+                    android:layout_weight="2"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:gravity="center"/>
+                    android:text=""
+                    android:layout_marginLeft="5dp"
+                    android:gravity="center_vertical"
+                    android:textSize="15dp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".5"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text=" : "
+                    android:textColor="@color/colorPrimaryDark"
+                    android:gravity="center_vertical"
+                    android:textSize="15dp"/>
+
+                <TextView
+                    android:id="@+id/tv_progress_angka"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2.5"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:gravity="center_vertical"
+                    android:inputType="numberDecimal"
+                    android:textSize="15dp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".5"
+                    android:id="@+id/tv_satuan"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:text=""
+                    android:gravity="center_vertical"
+                    android:textSize="15dp"/>
             </TableRow>
-            <!--<TableRow-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginTop="10dp"-->
-                <!--android:orientation="horizontal">-->
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp">
 
-                <!--<Button-->
-                    <!--android:text="View Image"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_alignParentLeft="true"-->
-                    <!--android:layout_alignParentStart="true"-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:id="@+id/btn_view"/>-->
-
-            <!--</TableRow>-->
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="10"
+                    android:textAlignment="center"
+                    android:text="Reject"
+                    android:id="@+id/btn_reject"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="center_vertical"/>
+            </TableRow>
         </TableLayout>
     </RelativeLayout>
 </RelativeLayout>

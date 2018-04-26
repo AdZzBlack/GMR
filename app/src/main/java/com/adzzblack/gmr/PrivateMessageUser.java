@@ -134,7 +134,7 @@ public class PrivateMessageUser extends Fragment implements View.OnClickListener
 
     private class getUser extends AsyncTask<String, Void, String> {
         String search = et_search.getText().toString();
-        String user_nomor = Index.globalfunction.getShared("user", "id", "");
+        String user_nomor = Index.globalfunction.getShared("user", "nomor", "");
 
         @Override
         protected String doInBackground(String... urls) {
@@ -186,7 +186,7 @@ public class PrivateMessageUser extends Fragment implements View.OnClickListener
 
     private class updateNotif extends AsyncTask<String, Void, String> {
         String search = et_search.getText().toString();
-        String user_nomor = Index.globalfunction.getShared("user", "id", "");
+        String user_nomor = Index.globalfunction.getShared("user", "nomor", "");
 
         @Override
         protected String doInBackground(String... urls) {

@@ -95,7 +95,8 @@ public class Index extends AppCompatActivity implements NavigationView.OnNavigat
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         Menu navmenu = navigationView.getMenu();
-        navmenu.findItem(R.id.nav_menu).setTitle("Welcome, " + Index.globalfunction.getShared("user", "nama", ""));
+        navmenu.findItem(R.id.nav_menu).setTitle("Welcome, " + Index.globalfunction.getShared("user", "nama", "") + " (" + Index.globalfunction.getShared("user", "role", "") + ")");
+        navmenu.findItem(R.id.nav_version).setTitle("version " + GlobalFunction.getVersion(this));
 
         approveElevasi = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_approve_elevasi));
         approveOrder = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_approve_order));
@@ -135,12 +136,17 @@ public class Index extends AppCompatActivity implements NavigationView.OnNavigat
             navmenu.findItem(R.id.nav_delivery_order).setVisible(false);
         }
 
-        if (Index.globalfunction.getShared("user", "role_notabeli", "0").equals("0")) {
+        if (Index.globalfunction.getShared("user", "role_viewnotabeli", "0").equals("0")) {
             navmenu.findItem(R.id.nav_opname).setVisible(false);
+            navmenu.findItem(R.id.nav_creditnote).setVisible(false);
         }
 
         if (Index.globalfunction.getShared("user", "role_map", "0").equals("0")) {
             navmenu.findItem(R.id.nav_map).setVisible(false);
+        }
+
+        if (Index.globalfunction.getShared("user", "role_crossbranch", "0").equals("0")) {
+            navmenu.findItem(R.id.nav_branch).setVisible(false);
         }
 
         Index.globalfunction.setShared("message","userto_nomor","");
@@ -245,9 +251,15 @@ public class Index extends AppCompatActivity implements NavigationView.OnNavigat
 
     public static void initializeCountDrawer() {
         //Gravity property aligns the text
+        try
+        {
+            String actionUrl = "Master/getCount/";
+            new getCounter().execute(actionUrl);
+        }
+        catch (Exception e)
+        {
 
-        String actionUrl = "Master/getCount/";
-        new getCounter().execute(actionUrl);
+        }
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -284,6 +296,12 @@ public class Index extends AppCompatActivity implements NavigationView.OnNavigat
             transaction.commit();
         } else if (id == R.id.nav_opname) {
             Fragment fragment = new CreateCreditNote();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        } else if (id == R.id.nav_creditnote) {
+            Fragment fragment = new ChooseCreditNote();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
@@ -328,13 +346,28 @@ public class Index extends AppCompatActivity implements NavigationView.OnNavigat
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
-        } else if (id == R.id.nav_logout) {
+        }
+        else if (id == R.id.nav_branch) {
+            ChooseCabang cdd = new ChooseCabang(this);
+            cdd.show();
+        }
+        else if (id == R.id.nav_logout) {
             String actionUrl = "Login/logoutUser/";
             new logout().execute(actionUrl);
         } else if (id == R.id.nav_list_elevasi) {
             Index.globalfunction.setShared("bangunan", "header", "0");
             Index.globalfunction.setShared("bangunan", "before", "");
             Index.globalfunction.setShared("global", "destination", "listelevasi");
+
+            Fragment fragment = new ChooseBangunan();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        } else if (id == R.id.nav_list_bpm) {
+            Index.globalfunction.setShared("bangunan", "header", "0");
+            Index.globalfunction.setShared("bangunan", "before", "");
+            Index.globalfunction.setShared("global", "destination", "listbpm");
 
             Fragment fragment = new ChooseBangunan();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -490,7 +523,7 @@ public class Index extends AppCompatActivity implements NavigationView.OnNavigat
         protected String doInBackground(String... urls) {
             try {
                 Index.jsonObject = new JSONObject();
-                Index.jsonObject.put("nomor", globalfunction.getShared("user", "id", ""));
+                Index.jsonObject.put("nomor", globalfunction.getShared("user", "nomor", ""));
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -502,6 +535,7 @@ public class Index extends AppCompatActivity implements NavigationView.OnNavigat
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
+            Log.d("nomor", "onPostExecute: " + globalfunction.getShared("user", "nomor", ""));
             try {
                 JSONArray jsonarray = new JSONArray(result);
                 if (jsonarray.length() > 0) {

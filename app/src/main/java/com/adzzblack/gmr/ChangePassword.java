@@ -64,7 +64,7 @@ public class ChangePassword extends Fragment implements View.OnClickListener{
     private class changePassword extends AsyncTask<String, Void, String>{
         String oldpass = et_oldpassword.getText().toString();
         String newpass = et_newpassword.getText().toString();
-        String user_id = GlobalFunction.getShared("user", "id", "");
+        String user_id = GlobalFunction.getShared("user", "nomor", "");
 
         @Override
         protected String doInBackground(String... urls) {

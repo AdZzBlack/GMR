@@ -50,6 +50,7 @@ import java.util.Map;
 public class FormOpname extends Fragment implements View.OnClickListener {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
+    static final int PICK_IMAGE_REQUEST = 3;
 
     private TextView tv_bangunan;
     private TextView tv_pekerjaan;
@@ -65,6 +66,7 @@ public class FormOpname extends Fragment implements View.OnClickListener {
     private ArrayList<ImageView> mImageView_;
     private ArrayList<ImageButton> mImageButton_;
     private ArrayList<Button> mButton_;
+    private ArrayList<Button> mButtonSelect_;
     private ArrayList<String> mPath_;
     private ArrayList<String> mPathRaw_;
     private ArrayList<String> mPhotoName_;
@@ -76,7 +78,7 @@ public class FormOpname extends Fragment implements View.OnClickListener {
     private int ctrImage = 0;
 
     private String nomor, pekerjaan, bangunan;
-    private int oldProgress;
+    private Double oldProgress;
 
     private Bitmap mImageBitmap;
     private String mCurrentPhotoName = "";
@@ -121,6 +123,7 @@ public class FormOpname extends Fragment implements View.OnClickListener {
         mImageView_ = new ArrayList<ImageView>();
         mImageButton_ = new ArrayList<ImageButton>();
         mButton_ = new ArrayList<Button>();
+        mButtonSelect_ = new ArrayList<Button>();
         mPath_ = new ArrayList<String>();
         mPathRaw_ = new ArrayList<String>();
         mPhotoName_ = new ArrayList<String>();
@@ -157,11 +160,12 @@ public class FormOpname extends Fragment implements View.OnClickListener {
 
             public void afterTextChanged(Editable s) {
                 try {
-                    Float luasProgress = Float.parseFloat(et_progress.getText().toString());
-                    Float progress = luasProgress * 100 / Float.parseFloat(tv_luas.getText().toString());
+                    Double progress = Double.parseDouble(et_progress.getText().toString()) * 100 / Double.parseDouble((tv_luas.getText().toString()));
 
-                    int newProgress = Math.round(progress);
-                    tv_progress.setText("Progress has reached " + newProgress + "%");
+                    tv_progress.setText("Progress has reached " + progress + "%");
+                    Log.d("runnn1", "afterTextChanged: " + Float.parseFloat(et_progress.getText().toString()));
+                    Log.d("runnn2", "afterTextChanged: " + Float.parseFloat(tv_luas.getText().toString()));
+                    Log.d("runnn3", "afterTextChanged: " + progress);
                 }
                 catch (Exception e)
                 {
@@ -196,6 +200,7 @@ public class FormOpname extends Fragment implements View.OnClickListener {
 
         final ImageView image = new ImageView(getContext());
         final Button btn = new Button(getContext());
+        final Button btnSelect = new Button(getContext());
         final ImageButton image1 = new ImageButton(getContext());
 
         image.setLayoutParams(layoutParams);
@@ -237,6 +242,26 @@ public class FormOpname extends Fragment implements View.OnClickListener {
         layout.addView(image1);
         mImageButton_.add(image1);
 
+        btnSelect.setLayoutParams(layoutParams1);
+        btnSelect.setText("Select From File");
+        btnSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                getIntent.setType("image/*");
+
+                Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                pickIntent.setType("image/*");
+
+                Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
+
+                startActivityForResult(chooserIntent, PICK_IMAGE_REQUEST);
+            }
+        });
+        // Adds the view to the layout
+        layout.addView(btnSelect);
+        mButtonSelect_.add(btnSelect);
 
         btn.setLayoutParams(layoutParams1);
         btn.setText("Remove Image");
@@ -257,16 +282,15 @@ public class FormOpname extends Fragment implements View.OnClickListener {
             btn_add.setVisibility(View.GONE);
         }
         else if(v.getId() == R.id.btn_send){
-            Float luasProgress = Float.parseFloat(et_progress.getText().toString());
-            Float progress = luasProgress * 100 / Float.parseFloat(tv_luas.getText().toString());
+            Double progress = Double.parseDouble(et_progress.getText().toString()) * 100 / Double.parseDouble(tv_luas.getText().toString());
 
-            int newProgress = Math.round(progress);
+            long newProgress = Math.round(progress);
             if(newProgress<0 && newProgress>100)
             {
                 Toast.makeText(getContext(), "Invalid input", Toast.LENGTH_LONG).show();
                 return;
             }
-            else if(newProgress<oldProgress)
+            else if(progress<oldProgress)
             {
                 Toast.makeText(getContext(), "Progress less than old progress", Toast.LENGTH_LONG).show();
                 return;
@@ -293,8 +317,11 @@ public class FormOpname extends Fragment implements View.OnClickListener {
                 }
             }
             Log.d("name", photoName);
+            progress = Double.parseDouble(et_progress.getText().toString()) * 100 / Double.parseDouble(tv_luas.getText().toString());
+            Log.d("runnnn", "onClick: " + progress);
+
             String actionUrl = "Opname/createOpname/";
-            new createOpname().execute( actionUrl );
+            new createOpname(progress + "").execute( actionUrl );
 
 //            Fragment fragment = new Sign();
 //            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
@@ -380,6 +407,68 @@ public class FormOpname extends Fragment implements View.OnClickListener {
                         intent.setAction(Intent.ACTION_VIEW);
                         intent.setDataAndType(Uri.parse(mPath), "image/*");
                         startActivity(intent);
+                    }
+                });
+            }
+
+            createNewImage();
+        }
+        else if (requestCode == PICK_IMAGE_REQUEST && resultCode == getActivity().RESULT_OK && data != null && data.getData() != null) {
+            File f = new File(MediaFilePath.getPath(getActivity().getBaseContext(), data.getData()));
+            mCurrentPhotoPath = "file:" + f.getAbsolutePath();
+            mCurrentPhotoPathRaw = f.getAbsolutePath();
+            mCurrentPhotoName = f.getName();
+
+            mImageBitmap = decodeBitmap(mCurrentPhotoPathRaw, 1920, 1080);
+            if(mImageView_.size()!=0)
+            {
+                mImageView_.get(mImageView_.size()-1).setImageBitmap(mImageBitmap);
+                mImageButton_.get(mImageButton_.size()-1).setVisibility(View.GONE);
+                mButtonSelect_.get(mButtonSelect_.size()-1).setVisibility(View.GONE);
+                mButton_.get(mButton_.size()-1).setVisibility(View.VISIBLE);
+                mImageView_.get(mImageView_.size()-1).setVisibility(View.VISIBLE);
+                mPathRaw_.add(mCurrentPhotoPathRaw);
+                mPath_.add(mCurrentPhotoPath);
+                mPhotoName_.add(mCurrentPhotoName);
+                final int ctr = mPath_.size()-1;
+                final int ctrIView = mImageView_.size()-1;
+                final int ctrIButton = mImageButton_.size()-1;
+                final int ctrButton = mButton_.size()-1;
+
+                mImageView_.get(mImageView_.size()-1).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.d("ctr", ctr + ", " + ctrIButton + ", " + ctrIView + ", " + ctrButton);
+                        Intent intent = new Intent();
+                        intent.setAction(Intent.ACTION_VIEW);
+                        intent.setDataAndType(Uri.parse(mPath_.get(ctr)), "image/*");
+                        startActivity(intent);
+                    }
+                });
+
+                mButton_.get(mButton_.size()-1).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.d("ctr", ctr + ", " + ctrIButton + ", " + ctrIView + ", " + ctrButton);
+
+                        File f = new File(mPath_.get(ctr));
+                        f.delete();
+                        f = new File(mPathRaw_.get(ctr));
+                        f.delete();
+
+                        mPath_.set(ctr, "");
+                        mPathRaw_.set(ctr, "");
+                        mPhotoName_.set(ctr, "");
+                        mImageButton_.get(ctrIButton).setVisibility(View.GONE);
+                        mButton_.get(ctrButton).setVisibility(View.GONE);
+                        mImageView_.get(ctrIView).setVisibility(View.GONE);
+                        layout.removeView(mImageButton_.get(ctrIButton));
+                        layout.removeView(mButton_.get(ctrButton));
+                        layout.removeView(mImageView_.get(ctrIView));
+                        if(mButton_.size()==0)
+                        {
+                            btn_add.setVisibility(View.VISIBLE);
+                        }
                     }
                 });
             }
@@ -522,7 +611,7 @@ public class FormOpname extends Fragment implements View.OnClickListener {
                             String satuan = (obj.getString("satuan"));
                             String progress = (obj.getString("progress"));
 
-                            oldProgress = Integer.parseInt(progress);
+                            oldProgress = Double.parseDouble(progress);
 
                             tv_mandor.setText(mandor);
                             tv_luas.setText(volume);
@@ -530,8 +619,10 @@ public class FormOpname extends Fragment implements View.OnClickListener {
                             tv_satuan1.setText(satuan);
                             tv_progress.setText("Progress has reached " + progress + "%");
 
-                            Float progressLuas = Float.parseFloat(volume) * Float.parseFloat(progress) / 100;
-                            et_progress.setText(String.valueOf(progressLuas));
+                            Double progressLuas = Double.parseDouble(progress) * Double.parseDouble(volume) / 100;
+                            Float finalProgressLuas = Float.parseFloat(String.valueOf(progressLuas));
+                            Log.d("testing", "onPostExecute: " + finalProgressLuas);
+                            et_progress.setText(String.valueOf(finalProgressLuas));
                         }
                     }
                 }
@@ -553,14 +644,16 @@ public class FormOpname extends Fragment implements View.OnClickListener {
     }
 
     private class createOpname extends AsyncTask<String, Void, String> {
-        Float luasProgress = Float.parseFloat(et_progress.getText().toString());
-        Float progress = luasProgress * 100 / Float.parseFloat(tv_luas.getText().toString());
-
-        int newProgress = Math.round(progress);
+        String progress;
         String nomor_bangunan = Index.globalfunction.getShared("bangunan", "nomorNow", "");
         String nomor_user = Index.globalfunction.getShared("user", "nomor", "");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String date = sdf.format(new Date());
+
+        public createOpname(String _progress)
+        {
+            progress = _progress;
+        }
 
         @Override
         protected String doInBackground(String... urls) {
@@ -569,7 +662,7 @@ public class FormOpname extends Fragment implements View.OnClickListener {
                 Index.jsonObject.put("nomor_rab", nomor);
                 Index.jsonObject.put("nomor_bangunan", nomor_bangunan);
                 Index.jsonObject.put("nomor_user", nomor_user);
-                Index.jsonObject.put("progress", newProgress);
+                Index.jsonObject.put("progress", progress);
                 Index.jsonObject.put("tanggal", date);
                 Index.jsonObject.put("photo", photoName);
             } catch (JSONException e) {

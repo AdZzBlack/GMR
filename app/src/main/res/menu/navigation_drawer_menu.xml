@@ -3,38 +3,41 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/nav_version"
+        android:title="Version" />
+    <item
         android:id="@+id/nav_menu"
-        android:title="Menu">
+        android:title="Menu"
+        >
         <menu>
-        <item
-            android:id="@+id/nav_dashboard"
-            android:icon="@drawable/dashboard"
-            android:title="Dashboard" />
-        <item
-            android:id="@+id/nav_map"
-            android:icon="@drawable/pin"
-            android:title="Map" />
-        <!--<item-->
-            <!--android:id="@+id/nav_testdraw"-->
-            <!--android:icon="@drawable/dashboard"-->
-            <!--android:title="Test Draw" />-->
-        <item
-            android:id="@+id/nav_approve_elevasi"
-            app:actionViewClass="android.widget.TextView"
-            android:icon="@drawable/elevasi"
-            android:title="Approve Elevasi" />
-        <item
-            android:id="@+id/nav_approve_order"
-            app:actionViewClass="android.widget.TextView"
-            android:icon="@drawable/delivery"
-            android:title="Approval Over DO" />
-        <item
-            android:id="@+id/nav_pasang"
-            android:icon="@drawable/pasangnomor"
-            android:title="Galery BA Pasang" />
-    </menu>
+            <item
+                android:id="@+id/nav_dashboard"
+                android:icon="@drawable/dashboard"
+                android:title="Dashboard" />
+            <item
+                android:id="@+id/nav_map"
+                android:icon="@drawable/pin"
+                android:title="Map" />
+            <!--<item-->
+                <!--android:id="@+id/nav_testdraw"-->
+                <!--android:icon="@drawable/dashboard"-->
+                <!--android:title="Test Draw" />-->
+            <item
+                android:id="@+id/nav_approve_elevasi"
+                app:actionViewClass="android.widget.TextView"
+                android:icon="@drawable/elevasi"
+                android:title="Approve Elevasi" />
+            <item
+                android:id="@+id/nav_approve_order"
+                app:actionViewClass="android.widget.TextView"
+                android:icon="@drawable/delivery"
+                android:title="Approval Over DO" />
+            <item
+                android:id="@+id/nav_pasang"
+                android:icon="@drawable/pasangnomor"
+                android:title="Galery BA Pasang" />
+        </menu>
     </item>
-
     <item
         android:id="@+id/nav_delivery_order"
         android:title="Delivery Order">
@@ -68,6 +71,10 @@
                 android:id="@+id/nav_opname"
                 android:icon="@drawable/opname"
                 android:title="List Opname" />
+            <item
+                android:id="@+id/nav_creditnote"
+                android:icon="@drawable/opname"
+                android:title="List Credit Note" />
         </menu>
     </item>
 
@@ -85,6 +92,10 @@
                 android:id="@+id/nav_changepassword"
                 android:icon="@drawable/password"
                 android:title="Change Password" />
+            <item
+                android:id="@+id/nav_branch"
+                android:icon="@drawable/branch"
+                android:title="Branch" />
             <item
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/logout"

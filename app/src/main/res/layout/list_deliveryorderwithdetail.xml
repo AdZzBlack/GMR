@@ -35,6 +35,32 @@
         android:layout_marginRight="15dp"
         android:textSize="20dp"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="[ Delivery Order ]"
+        android:id="@+id/tv_do"
+        android:layout_below="@id/tv_nama"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp"
+        android:textSize="15dp"
+        android:visibility="gone"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_image"
+        android:text="image"
+        android:layout_marginRight="15dp"
+        android:layout_below="@+id/tv_nama"
+        android:layout_alignParentRight="true"
+        android:textSize="5pt"
+        android:visibility="gone"
+        />
+
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,7 +68,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="10dp"
-        android:layout_below="@+id/tv_nama"
+        android:layout_below="@+id/tv_do"
         android:layout_alignParentRight="true"
         android:layout_alignParentLeft="true"
         android:divider="@color/colorWhite"

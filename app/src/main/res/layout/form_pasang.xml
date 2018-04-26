@@ -36,7 +36,6 @@
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tl_content"
                 android:visibility="gone">
 
                 <ImageView
@@ -62,6 +61,15 @@
                     android:padding="50dp"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentRight="true"/>
+
+                <Button
+                    android:text="Select From File"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:id="@+id/btn_selectfromfile"
+                    />
 
                 <Button
                     android:text="Change Image"

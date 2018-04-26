@@ -111,8 +111,9 @@ public class FormBPM extends Fragment implements View.OnClickListener {
                     String harga = (obj.getString("harga"));
                     String nomorbarang = (obj.getString("nomorbarang"));
                     String nama = namabarang + " (" + GlobalFunction.delimeter(jumlah) + " " + satuan + ")";
+                    String namatok = namabarang;
 
-                    itemadapter.add(new ItemDeliveryOrderAdapter(nomor, nama, jumlah, harga, nomorbarang));
+                    itemadapter.add(new ItemDeliveryOrderAdapter(nomor, nama, jumlah, harga, nomorbarang, namatok, satuan));
                     itemadapter.notifyDataSetChanged();
                 }
             }
@@ -134,12 +135,13 @@ public class FormBPM extends Fragment implements View.OnClickListener {
             String data = "";
             for(int i=0;i<itemadapter.items.size();i++)
             {
-                data = data + itemadapter.items.get(i).getNomor() + "~" + itemadapter.items.get(i).getJumlahBPM() + "~" + itemadapter.items.get(i).getHarga() + "~" + itemadapter.items.get(i).getNomorBarang() + "~" + itemadapter.items.get(i).getKeterangan() + "|";
+                data = data + itemadapter.items.get(i).getNomor() + "~" + GlobalFunction.delimeter(itemadapter.items.get(i).getJumlahBPM()) + " " + itemadapter.items.get(i).getSatuan() + "~" + itemadapter.items.get(i).getHarga() + "~" + itemadapter.items.get(i).getNomorBarang() + "~" + GlobalFunction.delimeter(itemadapter.items.get(i).getJumlah()) + " " + itemadapter.items.get(i).getSatuan() + "~"  + itemadapter.items.get(i).getKeterangan() + "~"  + itemadapter.items.get(i).getNamatok() + "|";
             }
             Index.globalfunction.setShared("global", "detailbpmbaru", data);
 
             Index.globalfunction.setShared("global", "from", "formBPM");
-            Fragment fragment = new Sign();
+//            Fragment fragment = new Sign();
+            Fragment fragment = new FormBPMPhoto();
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
@@ -173,21 +175,25 @@ public class FormBPM extends Fragment implements View.OnClickListener {
     class ItemDeliveryOrderAdapter {
 
         private String nama;
+        private String namatok;
         private String jumlah;
         private String jumlahbpm;
         private String nomor;
         private String harga;
         private String nomorbarang;
         private String keterangan;
+        private String satuan;
 
-        public ItemDeliveryOrderAdapter(String nomor, String nama, String jumlah, String harga, String nomorbarang) {
+        public ItemDeliveryOrderAdapter(String nomor, String nama, String jumlah, String harga, String nomorbarang, String namatok, String satuan) {
             this.setNomor(nomor);
             this.setNama(nama);
+            this.setNamatok(namatok);
             this.setJumlah(jumlah);
             this.setJumlahBPM(jumlah);
             this.setHarga(harga);
             this.setNomorBarang(nomorbarang);
             this.setKeterangan("");
+            this.setSatuan(satuan);
         }
 
         public String getNomor() {return nomor;}
@@ -206,6 +212,18 @@ public class FormBPM extends Fragment implements View.OnClickListener {
 
         public void setNama(String nama) {
             this.nama = nama;
+        }
+
+        public String getSatuan() {return satuan;}
+
+        public void setSatuan(String satuan) {
+            this.satuan = satuan;
+        }
+
+        public String getNamatok() {return namatok;}
+
+        public void setNamatok(String namatok) {
+            this.namatok = namatok;
         }
 
         public String getJumlah() {return jumlah;}
@@ -281,8 +299,8 @@ public class FormBPM extends Fragment implements View.OnClickListener {
                     // Set up the input
                     final EditText input = new EditText(getContext());
                     // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-                    input.setText(finalHolder.adapterItem.getJumlahBPM());
-                    input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                    input.setText(GlobalFunction.delimeter(finalHolder.adapterItem.getJumlahBPM()));
+                    input.setInputType(InputType.TYPE_CLASS_PHONE);
                     input.setSelection(input.getText().length());
                     builder.setView(input);
 
@@ -293,6 +311,7 @@ public class FormBPM extends Fragment implements View.OnClickListener {
                             if(Float.parseFloat(input.getText().toString())<=Float.parseFloat(finalHolder.adapterItem.getJumlah()))
                             {
                                 finalHolder.adapterItem.setJumlahBPM(input.getText().toString());
+                                setupItem(finalHolder);
                             }
                             else
                             {
@@ -329,6 +348,7 @@ public class FormBPM extends Fragment implements View.OnClickListener {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             finalHolder.adapterItem.setKeterangan(input.getText().toString());
+                            setupItem(finalHolder);
                         }
                     });
                     builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

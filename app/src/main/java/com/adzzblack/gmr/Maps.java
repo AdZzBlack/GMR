@@ -1,5 +1,6 @@
 package com.adzzblack.gmr;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,7 +25,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,24 +41,34 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ADI on 4/18/2017.
  */
 
 public class Maps extends Fragment {
+    private ItemListAdapter itemadapter;
+    private ListView lv_detail;
+
     protected AlphaAnimation fadeIn = new AlphaAnimation(0.0f, 1.0f);
     private Bitmap bitmap;
     protected View v;
     protected ViewGroup c;
     private Paint mPaint;
+    private RelativeLayout rela;
+    private int ctrBangunan = -1;
+    private int ctrProgress = -1;
+
     ArrayList<Float> x = new ArrayList<Float>();
     ArrayList<Float> y = new ArrayList<Float>();
+    ArrayList<String> name = new ArrayList<String>();
     ArrayList<Float> progress = new ArrayList<Float>();
     ArrayList<String> progressName = new ArrayList<String>();
 
     ArrayList<ArrayList<Float>> x_ = new ArrayList<ArrayList<Float>>();
     ArrayList<ArrayList<Float>> y_ = new ArrayList<ArrayList<Float>>();
+    ArrayList<ArrayList<String>> name_ = new ArrayList<ArrayList<String>>();
     ArrayList<ArrayList<Float>> progress_ = new ArrayList<ArrayList<Float>>();
     ArrayList<ArrayList<String>> progressName_ = new ArrayList<ArrayList<String>>();
 
@@ -73,14 +89,18 @@ public class Maps extends Fragment {
         v = inflater.inflate(R.layout.main_fragment, container, false);
         getActivity().setTitle("Map");
 
+        itemadapter = new ItemListAdapter(getActivity(), R.layout.list_detailmap, new ArrayList<ItemAdapter>());
+        lv_detail = (ListView) v.findViewById(R.id.lv_detail);
+        lv_detail.setAdapter(itemadapter);
+
+        rela = (RelativeLayout) v.findViewById(R.id.tes);
+
         DisplayMetrics displayMetrics = new DisplayMetrics();
         WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE); // the results will be higher than using the activity context object or the getWindowManager() shortcut
         wm.getDefaultDisplay().getMetrics(displayMetrics);
         int screenWidth = displayMetrics.widthPixels;
         int screenHeight = displayMetrics.heightPixels;
-        int newHeight = 768 * screenWidth /
         Log.d("pixel4", screenWidth + ", " + screenHeight);
-
 
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
@@ -114,12 +134,12 @@ public class Maps extends Fragment {
             e.printStackTrace();
         }
 
-        RelativeLayout rela = (RelativeLayout) v.findViewById(R.id.tes);
         mView = new MyView(getActivity());
         rela.addView(mView);
 
         final RelativeLayout rela_ = rela;
         final ImageView iv_ = iv;
+        final ListView lv_ = lv_detail;
         rela.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,6 +148,9 @@ public class Maps extends Fragment {
                 rela_.setDrawingCacheEnabled(true);
                 rela_.buildDrawingCache();
                 Bitmap bmp = Bitmap.createBitmap(rela_.getDrawingCache());
+
+                rela_.layout(0,0,iv_.getWidth(),iv_.getHeight() + lv_.getHeight());
+                rela_.buildDrawingCache();
                 rela_.setDrawingCacheEnabled(false);
 
                 String pathofBmp = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), bmp,"temp.png", "drawing");
@@ -174,36 +197,36 @@ public class Maps extends Fragment {
 
             Log.d("ctr", x_.size() + "");
             for(int z=0; z<x_.size();z++) {
-                x = x_.get(z);
-                y = y_.get(z);
+                if(ctrBangunan==z || ctrBangunan==-1)
+                {
+                    x = x_.get(z);
+                    y = y_.get(z);
 
-                Path wallpathbase = new Path();
-                wallpathbase.reset();
-                if(x.size()>=1)
-                {
-                    wallpathbase.moveTo(x.get(0), y.get(0));
-                    for (int i = 1; i < x.size(); i++) {
-                        wallpathbase.lineTo(x.get(i), y.get(i));
+                    Path wallpathbase = new Path();
+                    wallpathbase.reset();
+                    if(x.size()>=1)
+                    {
+                        wallpathbase.moveTo(x.get(0), y.get(0));
+                        for (int i = 1; i < x.size(); i++) {
+                            wallpathbase.lineTo(x.get(i), y.get(i));
+                        }
+                        canvas.drawPath(wallpathbase, wallpaintbase);
                     }
-                    canvas.drawPath(wallpathbase, wallpaintbase);
-                }
 
-                if(progress_.size()>z)
-                {
-                    Log.d("ppp", progressName_.size() + " " + z);
-                    for(int w=0; w<progress_.get(z).size();w++) {
-                        drawPercentage(canvas, progress_.get(z).get(w), x_.get(z), y_.get(z), w+1);
-                    }
-                }
-                else
-                {
                     drawPercentage(canvas, Float.parseFloat("100"), x_.get(z), y_.get(z), 0);
+                    if(progress_.size()>z)
+                    {
+                        if(progress_.get(z).size()>z)
+                        {
+                            Log.d("ppp", progressName_.get(z).size() + " " + z);
+                            for(int w=0; w<progress_.get(z).size();w++) {
+                                if(ctrProgress==w+1 || ctrProgress==-1)
+                                    drawPercentage(canvas, progress_.get(z).get(w), x_.get(z), y_.get(z), w+1);
+                            }
+                        }
+                    }
                 }
-
-//                drawPercentage(canvas, 80, 1);
-//                drawPercentage(canvas, 20, 2);
             }
-
         }
 
         public Bitmap getBitmap()
@@ -216,6 +239,33 @@ public class Maps extends Fragment {
         }
     }
 
+    public void setInformation()
+    {
+        String information = "";
+        itemadapter.add(new ItemAdapter("-1", "Lihat semua bangunan", "", "", -1));
+        itemadapter.notifyDataSetChanged();
+
+        for(int z=0; z<x_.size();z++) {
+            for(int w=0; w<name_.get(z).size();w++) {
+                information = information + "<b>" + name_.get(z).get(w) + "</b><br />";
+                itemadapter.add(new ItemAdapter(String.valueOf(z), name_.get(z).get(w), "", "", -1));
+                itemadapter.notifyDataSetChanged();
+            }
+
+            if(progress_.size()>z)
+            {
+                if(progress_.get(z).size()>z)
+                {
+                    for(int w=0; w<progress_.get(z).size();w++) {
+                        information = information + "     " + progressName_.get(z).get(w) + " : " + progress_.get(z).get(w) + "%<br />";
+                        itemadapter.add(new ItemAdapter(String.valueOf(z), "", progressName_.get(z).get(w), progress_.get(z).get(w) + "%", (w+1)));
+                        itemadapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        }
+//        tvketerangan.setText(Html.fromHtml(information));
+    }
 
     public void drawPercentage(Canvas canvas, Float percentage, ArrayList<Float> x_, ArrayList<Float> y_, int color)
     {
@@ -227,6 +277,8 @@ public class Maps extends Fragment {
         else if(color==4) wallpaint.setColor(Color.GREEN);
         else if(color==5) wallpaint.setColor(Color.BLUE);
         else if(color==6) wallpaint.setColor(Color.MAGENTA);
+        else if(color==7) wallpaint.setColor(Color.WHITE);
+        else if(color==8) wallpaint.setColor(Color.WHITE);
         wallpaint.setAlpha(150);
         wallpaint.setStyle(Paint.Style.FILL);
 
@@ -423,11 +475,13 @@ public class Maps extends Fragment {
                     for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("error")){
+                            String name1 = obj.getString("name");
                             String koordinat = obj.getString("koordinat");
                             String progress1 = obj.getString("progressbangunan");
                             String progressnama1 = obj.getString("progressnama");
                             String denah = obj.getString("denah");
                             String parent = obj.getString("isparent");
+                            String childname = obj.getString("childName");
                             String childkoordinat = obj.getString("childkoordinat");
                             String childprogress = obj.getString("childprogressbangunan");
                             String childprogressnama = obj.getString("childprogressnama");
@@ -449,6 +503,18 @@ public class Maps extends Fragment {
                                 }
                                 x_.add(x);
                                 y_.add(y);
+
+                                if(!name1.equals(""))
+                                {
+                                    String[] pieces0 = name1.trim().split("\\|");
+                                    name = new ArrayList<String>();
+                                    for(int j=0 ; j < pieces0.length ; j++) {
+                                        String string = pieces0[j];
+
+                                        name.add(string);
+                                    }
+                                    name_.add(name);
+                                }
 
                                 if(!progress1.equals(""))
                                 {
@@ -502,6 +568,22 @@ public class Maps extends Fragment {
                                     y_.add(y);
                                 }
 
+                                String[] pieces0_ = childname.trim().split("\\@");
+                                for(int k=0 ; k < pieces0_.length ; k++) {
+                                    String[] pieces = pieces0_[k].trim().split("\\|");
+                                    name = new ArrayList<String>();
+
+                                    for(int j=0 ; j < pieces.length ; j++) {
+                                        String string = pieces[j];
+                                        if(!string.equals(""))
+                                        {
+                                            String newName = string;
+                                            name.add(newName);
+                                        }
+                                    }
+                                    name_.add(name);
+                                }
+
                                 String[] pieces1_ = childprogress.trim().split("\\@");
                                 for(int k=0 ; k < pieces1_.length ; k++) {
                                     String[] pieces = pieces1_[k].trim().split("\\|");
@@ -536,6 +618,7 @@ public class Maps extends Fragment {
                             }
 
                             setMap(denah);
+                            setInformation();
                         }
                         else
                         {
@@ -572,5 +655,146 @@ public class Maps extends Fragment {
         Index.loadingDialog.setCancelable(true);
         Index.loadingDialog.setCanceledOnTouchOutside(false);
         Index.loadingDialog.show();
+    }
+
+    class ItemAdapter {
+
+        private String nomor;
+        private String namabangunan;
+        private String namaprogress;
+        private String progress;
+        private int color;
+
+
+        public ItemAdapter(String nomor, String namabangunan, String namaprogress, String progress, int color) {
+            this.setNomor(nomor);
+            this.setNamabangunan(namabangunan);
+            this.setNamaprogress(namaprogress);
+            this.setProgress(progress);
+            this.setColor(color);
+        }
+
+        public String getNomor() {
+            return nomor;
+        }
+
+        public void setNomor(String param) {this.nomor = param; }
+
+        public String getNamaprogress() {
+            return namaprogress;
+        }
+
+        public void setNamaprogress(String param) {this.namaprogress = param; }
+
+        public String getNamabangunan() {
+            return namabangunan;
+        }
+
+        public void setNamabangunan(String param) {this.namabangunan = param; }
+
+        public String getProgress() {
+            return progress;
+        }
+
+        public void setProgress(String param) {this.progress = param; }
+
+        public int getColor() {
+            return color;
+        }
+
+        public void setColor(int param) {this.color = param; }
+    }
+
+    class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
+
+        private List<ItemAdapter> items;
+        private int layoutResourceId;
+        private Context context;
+
+
+        public ItemListAdapter(Context context, int layoutResourceId, List<ItemAdapter> items) {
+            super(context, layoutResourceId, items);
+            this.layoutResourceId = layoutResourceId;
+            this.context = context;
+            this.items = items;
+        }
+
+        public class Holder {
+            ItemAdapter adapterItem;
+            TextView tv_namabangunan;
+            TextView tv_namaprogress;
+            TextView tv_progress;
+            TextView tv_color;
+            LinearLayout ll_bangunan;
+            LinearLayout ll_progress;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            View row = convertView;
+            Holder holder = null;
+
+            if(row==null)
+            {
+                LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+                row = inflater.inflate(layoutResourceId, parent, false);
+            }
+
+            holder = new Holder();
+            holder.adapterItem = items.get(position);
+
+            holder.tv_namabangunan = (TextView)row.findViewById(R.id.tv_namabangunan);
+            holder.tv_namaprogress = (TextView)row.findViewById(R.id.tv_namaprogress);
+            holder.tv_progress = (TextView)row.findViewById(R.id.tv_progress);
+            holder.tv_color = (TextView)row.findViewById(R.id.tv_color);
+            holder.ll_bangunan = (LinearLayout) row.findViewById(R.id.ll_bangunan);
+            holder.ll_progress = (LinearLayout) row.findViewById(R.id.ll_progress);
+
+            row.setTag(holder);
+            setupItem(holder);
+
+            final Holder finalHolder = holder;
+            row.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ctrBangunan = Integer.parseInt(finalHolder.adapterItem.getNomor());
+                    ctrProgress = finalHolder.adapterItem.getColor();
+                    rela.removeView(mView);
+                    mView = new MyView(getActivity());
+                    rela.addView(mView);
+                    lv_detail.setSelection(position);
+                    lv_detail.setItemChecked(position, true);
+                    itemadapter.notifyDataSetChanged();
+                }
+            });
+
+            return row;
+        }
+
+        private void setupItem(Holder holder) {
+            if(holder.adapterItem.getNamabangunan().equals(""))
+            {
+                holder.ll_bangunan.setVisibility(View.GONE);
+                holder.ll_progress.setVisibility(View.VISIBLE);
+                holder.tv_namaprogress.setText(holder.adapterItem.getNamaprogress());
+                holder.tv_progress.setText(holder.adapterItem.getProgress());
+
+                if(holder.adapterItem.getColor()==0) holder.tv_color.setBackgroundColor(Color.GRAY);
+                else if(holder.adapterItem.getColor()==1) holder.tv_color.setBackgroundColor(Color.RED);
+                else if(holder.adapterItem.getColor()==2) holder.tv_color.setBackgroundColor(Color.rgb(255,165,0));
+                else if(holder.adapterItem.getColor()==3) holder.tv_color.setBackgroundColor(Color.YELLOW);
+                else if(holder.adapterItem.getColor()==4) holder.tv_color.setBackgroundColor(Color.GREEN);
+                else if(holder.adapterItem.getColor()==5) holder.tv_color.setBackgroundColor(Color.BLUE);
+                else if(holder.adapterItem.getColor()==6) holder.tv_color.setBackgroundColor(Color.MAGENTA);
+                else if(holder.adapterItem.getColor()==7) holder.tv_color.setBackgroundColor(Color.WHITE);
+                else if(holder.adapterItem.getColor()==8) holder.tv_color.setBackgroundColor(Color.WHITE);
+            }
+            else
+            {
+                holder.ll_bangunan.setVisibility(View.VISIBLE);
+                holder.ll_progress.setVisibility(View.GONE);
+                holder.tv_namabangunan.setText(holder.adapterItem.getNamabangunan());
+            }
+        }
     }
 }

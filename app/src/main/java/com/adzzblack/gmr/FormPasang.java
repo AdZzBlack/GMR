@@ -40,6 +40,7 @@ import java.util.Map;
 public class FormPasang extends Fragment implements View.OnClickListener {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
+    static final int PICK_IMAGE_REQUEST = 3;
 
     private Button btn_send;
     private Button btn_add;
@@ -47,6 +48,7 @@ public class FormPasang extends Fragment implements View.OnClickListener {
     private ArrayList<ImageView> mImageView_;
     private ArrayList<ImageButton> mImageButton_;
     private ArrayList<Button> mButton_;
+    private ArrayList<Button> mButtonSelect_;
     private ArrayList<String> mPath_;
     private ArrayList<String> mPathRaw_;
     private ArrayList<String> mPhotoName_;
@@ -91,6 +93,7 @@ public class FormPasang extends Fragment implements View.OnClickListener {
         mImageView_ = new ArrayList<ImageView>();
         mImageButton_ = new ArrayList<ImageButton>();
         mButton_ = new ArrayList<Button>();
+        mButtonSelect_ = new ArrayList<Button>();
         mPath_ = new ArrayList<String>();
         mPathRaw_ = new ArrayList<String>();
         mPhotoName_ = new ArrayList<String>();
@@ -140,6 +143,7 @@ public class FormPasang extends Fragment implements View.OnClickListener {
 
         final ImageView image = new ImageView(getContext());
         final Button btn = new Button(getContext());
+        final Button btnSelect = new Button(getContext());
         final ImageButton image1 = new ImageButton(getContext());
 
         image.setLayoutParams(layoutParams);
@@ -181,6 +185,26 @@ public class FormPasang extends Fragment implements View.OnClickListener {
         layout.addView(image1);
         mImageButton_.add(image1);
 
+        btnSelect.setLayoutParams(layoutParams1);
+        btnSelect.setText("Select From File");
+        btnSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                getIntent.setType("image/*");
+
+                Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                pickIntent.setType("image/*");
+
+                Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
+
+                startActivityForResult(chooserIntent, PICK_IMAGE_REQUEST);
+            }
+        });
+        // Adds the view to the layout
+        layout.addView(btnSelect);
+        mButtonSelect_.add(btnSelect);
 
         btn.setLayoutParams(layoutParams1);
         btn.setText("Remove Image");
@@ -227,6 +251,7 @@ public class FormPasang extends Fragment implements View.OnClickListener {
             {
                 mImageView_.get(mImageView_.size()-1).setImageBitmap(mImageBitmap);
                 mImageButton_.get(mImageButton_.size()-1).setVisibility(View.GONE);
+                mButtonSelect_.get(mButtonSelect_.size()-1).setVisibility(View.GONE);
                 mButton_.get(mButton_.size()-1).setVisibility(View.VISIBLE);
                 mImageView_.get(mImageView_.size()-1).setVisibility(View.VISIBLE);
                 mPathRaw_.add(mCurrentPhotoPathRaw);
@@ -252,9 +277,6 @@ public class FormPasang extends Fragment implements View.OnClickListener {
                     @Override
                     public void onClick(View v) {
                         Log.d("ctr", ctr + ", " + ctrIButton + ", " + ctrIView + ", " + ctrButton);
-//                            mImageButton_.remove(ctrIButton);
-//                            mImageView_.remove(ctrIView);
-//                            mButton_.remove(ctrButton);
 
                         File f = new File(mPath_.get(ctr));
                         f.delete();
@@ -264,8 +286,6 @@ public class FormPasang extends Fragment implements View.OnClickListener {
                         mPath_.set(ctr, "");
                         mPathRaw_.set(ctr, "");
                         mPhotoName_.set(ctr, "");
-//                            mPath_.remove(ctr);
-//                            mPathRaw_.remove(ctr);
                         mImageButton_.get(ctrIButton).setVisibility(View.GONE);
                         mButton_.get(ctrButton).setVisibility(View.GONE);
                         mImageView_.get(ctrIView).setVisibility(View.GONE);
@@ -293,6 +313,68 @@ public class FormPasang extends Fragment implements View.OnClickListener {
                         intent.setAction(Intent.ACTION_VIEW);
                         intent.setDataAndType(Uri.parse(mPath), "image/*");
                         startActivity(intent);
+                    }
+                });
+            }
+
+            createNewImage();
+        }
+        else if (requestCode == PICK_IMAGE_REQUEST && resultCode == getActivity().RESULT_OK && data != null && data.getData() != null) {
+            File f = new File(MediaFilePath.getPath(getActivity().getBaseContext(), data.getData()));
+            mCurrentPhotoPath = "file:" + f.getAbsolutePath();
+            mCurrentPhotoPathRaw = f.getAbsolutePath();
+            mCurrentPhotoName = f.getName();
+
+            mImageBitmap = decodeBitmap(mCurrentPhotoPathRaw, 1920, 1080);
+            if(mImageView_.size()!=0)
+            {
+                mImageView_.get(mImageView_.size()-1).setImageBitmap(mImageBitmap);
+                mImageButton_.get(mImageButton_.size()-1).setVisibility(View.GONE);
+                mButtonSelect_.get(mButtonSelect_.size()-1).setVisibility(View.GONE);
+                mButton_.get(mButton_.size()-1).setVisibility(View.VISIBLE);
+                mImageView_.get(mImageView_.size()-1).setVisibility(View.VISIBLE);
+                mPathRaw_.add(mCurrentPhotoPathRaw);
+                mPath_.add(mCurrentPhotoPath);
+                mPhotoName_.add(mCurrentPhotoName);
+                final int ctr = mPath_.size()-1;
+                final int ctrIView = mImageView_.size()-1;
+                final int ctrIButton = mImageButton_.size()-1;
+                final int ctrButton = mButton_.size()-1;
+
+                mImageView_.get(mImageView_.size()-1).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.d("ctr", ctr + ", " + ctrIButton + ", " + ctrIView + ", " + ctrButton);
+                        Intent intent = new Intent();
+                        intent.setAction(Intent.ACTION_VIEW);
+                        intent.setDataAndType(Uri.parse(mPath_.get(ctr)), "image/*");
+                        startActivity(intent);
+                    }
+                });
+
+                mButton_.get(mButton_.size()-1).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.d("ctr", ctr + ", " + ctrIButton + ", " + ctrIView + ", " + ctrButton);
+
+                        File f = new File(mPath_.get(ctr));
+                        f.delete();
+                        f = new File(mPathRaw_.get(ctr));
+                        f.delete();
+
+                        mPath_.set(ctr, "");
+                        mPathRaw_.set(ctr, "");
+                        mPhotoName_.set(ctr, "");
+                        mImageButton_.get(ctrIButton).setVisibility(View.GONE);
+                        mButton_.get(ctrButton).setVisibility(View.GONE);
+                        mImageView_.get(ctrIView).setVisibility(View.GONE);
+                        layout.removeView(mImageButton_.get(ctrIButton));
+                        layout.removeView(mButton_.get(ctrButton));
+                        layout.removeView(mImageView_.get(ctrIView));
+                        if(mButton_.size()==0)
+                        {
+                            btn_add.setVisibility(View.VISIBLE);
+                        }
                     }
                 });
             }

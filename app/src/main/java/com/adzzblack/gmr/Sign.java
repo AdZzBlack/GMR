@@ -118,6 +118,7 @@ public class Sign extends Fragment {
             btn_next.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    new doFileUpload().execute(decodeFile(Index.globalfunction.getShared("global", "bpmpathraw", ""), Index.globalfunction.getShared("global", "bpmphoto", ""), 1920, 1080));
                     String actionUrl = "BPM/createBPM/";
                     new createBPM().execute( actionUrl );
                 }
@@ -223,6 +224,60 @@ public class Sign extends Fragment {
         }
     }
 
+    private String decodeFile(String path, String photoname,int DESIREDWIDTH, int DESIREDHEIGHT) {
+        String strMyImagePath = null;
+        Bitmap scaledBitmap = null;
+
+        try {
+            // Part 1: Decode image
+            Bitmap unscaledBitmap = ScalingUtilities.decodeFile(path, DESIREDWIDTH, DESIREDHEIGHT, ScalingUtilities.ScalingLogic.FIT);
+
+            if (!(unscaledBitmap.getWidth() <= DESIREDWIDTH && unscaledBitmap.getHeight() <= DESIREDHEIGHT)) {
+                // Part 2: Scale image
+                scaledBitmap = ScalingUtilities.createScaledBitmap(unscaledBitmap, DESIREDWIDTH, DESIREDHEIGHT, ScalingUtilities.ScalingLogic.FIT);
+            } else {
+                unscaledBitmap.recycle();
+                return path;
+            }
+
+            // Store to tmp file
+
+            String extr = Environment.getExternalStorageDirectory().toString();
+            File mFolder = new File(extr + "/TMMFOLDER");
+            if (!mFolder.exists()) {
+                mFolder.mkdir();
+            }
+
+            String s = photoname;
+
+            File f = new File(mFolder.getAbsolutePath(), s);
+
+            strMyImagePath = f.getAbsolutePath();
+            FileOutputStream fos = null;
+            try {
+                fos = new FileOutputStream(f);
+                scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 75, fos);
+                fos.flush();
+                fos.close();
+            } catch (FileNotFoundException e) {
+
+                e.printStackTrace();
+            } catch (Exception e) {
+
+                e.printStackTrace();
+            }
+
+            scaledBitmap.recycle();
+        } catch (Throwable e) {
+        }
+
+        if (strMyImagePath == null) {
+            return path;
+        }
+        return strMyImagePath;
+
+    }
+
     private void openScreenshot(File imageFile) {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
@@ -263,10 +318,17 @@ public class Sign extends Fragment {
                 float[] columnWidth = new float[]{40, 10, 50};
                 table.setWidths(columnWidth);
 
-                Font fheader = new Font(Font.FontFamily.TIMES_ROMAN,10.0f, Font.BOLD, BaseColor.BLACK);
-                Font fsubheader = new Font(Font.FontFamily.TIMES_ROMAN,6.0f, Font.BOLD, BaseColor.BLACK);
+//                Font fheader = new Font(Font.FontFamily.TIMES_ROMAN,10.0f, Font.BOLD, BaseColor.BLACK);
+//                Font fsubheader = new Font(Font.FontFamily.TIMES_ROMAN,6.0f, Font.BOLD, BaseColor.BLACK);
+//                Font ffooter = new Font(Font.FontFamily.TIMES_ROMAN,5.0f, Font.BOLD, BaseColor.BLACK);
+//                Font f = new Font(Font.FontFamily.TIMES_ROMAN,5.0f, Font.NORMAL, BaseColor.BLACK);
+//                Font fbold = new Font(Font.FontFamily.TIMES_ROMAN,6.0f, Font.BOLDITALIC, BaseColor.BLACK);
+//                Font f1 = new Font(Font.FontFamily.TIMES_ROMAN,5.0f, Font.NORMAL, BaseColor.RED);
+
+                Font fheader = new Font(Font.FontFamily.TIMES_ROMAN,18.0f, Font.BOLD, BaseColor.BLACK);
+                Font fsubheader = new Font(Font.FontFamily.TIMES_ROMAN,12.0f, Font.BOLD, BaseColor.BLACK);
                 Font ffooter = new Font(Font.FontFamily.TIMES_ROMAN,5.0f, Font.BOLD, BaseColor.BLACK);
-                Font f = new Font(Font.FontFamily.TIMES_ROMAN,5.0f, Font.NORMAL, BaseColor.BLACK);
+                Font f = new Font(Font.FontFamily.TIMES_ROMAN,10.0f, Font.NORMAL, BaseColor.BLACK);
                 Font fbold = new Font(Font.FontFamily.TIMES_ROMAN,6.0f, Font.BOLDITALIC, BaseColor.BLACK);
                 Font f1 = new Font(Font.FontFamily.TIMES_ROMAN,5.0f, Font.NORMAL, BaseColor.RED);
 
@@ -280,7 +342,7 @@ public class Sign extends Fragment {
 
                 PdfPTable pt = new PdfPTable(3);
                 pt.setWidthPercentage(100);
-                float[] fl = new float[]{10, 5, 85};
+                float[] fl = new float[]{30, 5, 65};
                 pt.setWidths(fl);
 
                 cell = new PdfPCell(new Phrase("Tanggal", fsubheader));
@@ -440,6 +502,236 @@ public class Sign extends Fragment {
         }
     }
 
+    public void createPDFBpm() throws FileNotFoundException, DocumentException {
+        String kode = Index.globalfunction.getShared("global", "print_kode", "");
+        String tanggal = Index.globalfunction.getShared("global", "print_tanggal", "");
+        String bangunan = Index.globalfunction.getShared("global", "print_bangunan", "");
+        String project = Index.globalfunction.getShared("global", "print_project", "");
+        String data = Index.globalfunction.getShared("global", "print_data", "");
+
+        //create document file
+        Document doc = new Document();
+        try {
+
+            Log.e("PDFCreator", "PDF Path: " + path);
+
+            String namee = "temp.pdf";
+            if(!kode.equals(""))
+            {
+                namee = kode.replace("/","") + ".pdf";
+            }
+
+            file = new File(dir, namee);
+            FileOutputStream fOut = new FileOutputStream(file);
+            PdfWriter writer = PdfWriter.getInstance(doc, fOut);
+
+            //open the document
+            doc.open();
+
+            try {
+                PdfPTable table = new PdfPTable(4);
+
+                float[] columnWidth = new float[]{30, 10, 10, 50};
+                table.setWidths(columnWidth);
+
+                Font fheader = new Font(Font.FontFamily.TIMES_ROMAN,10.0f, Font.BOLD, BaseColor.BLACK);
+                Font fsubheader = new Font(Font.FontFamily.TIMES_ROMAN,6.0f, Font.BOLD, BaseColor.BLACK);
+                Font ffooter = new Font(Font.FontFamily.TIMES_ROMAN,5.0f, Font.BOLD, BaseColor.BLACK);
+                Font f = new Font(Font.FontFamily.TIMES_ROMAN,5.0f, Font.NORMAL, BaseColor.BLACK);
+                Font fbold = new Font(Font.FontFamily.TIMES_ROMAN,6.0f, Font.BOLDITALIC, BaseColor.BLACK);
+                Font f1 = new Font(Font.FontFamily.TIMES_ROMAN,5.0f, Font.NORMAL, BaseColor.RED);
+
+                PdfPTable pTable = new PdfPTable(1);
+                pTable.setWidthPercentage(100);
+
+                cell = new PdfPCell(new Phrase("BUKTI PENERIMAAN MATERIAL " + kode, fheader));
+                cell.setColspan(4);
+                cell.setBorder(Rectangle.NO_BORDER);
+                table.addCell(cell);
+
+                PdfPTable pt = new PdfPTable(3);
+                pt.setWidthPercentage(100);
+                float[] fl = new float[]{10, 5, 85};
+                pt.setWidths(fl);
+
+                cell = new PdfPCell(new Phrase("Tanggal", fsubheader));
+                cell.setBorder(Rectangle.NO_BORDER);
+                pt.addCell(cell);
+
+                cell = new PdfPCell(new Phrase(":", fsubheader));
+                cell.setBorder(Rectangle.NO_BORDER);
+                pt.addCell(cell);
+
+                cell = new PdfPCell(new Phrase(tanggal, f));
+                cell.setBorder(Rectangle.NO_BORDER);
+                pt.addCell(cell);
+
+                cell = new PdfPCell(new Phrase("Proyek", fsubheader));
+                cell.setBorder(Rectangle.NO_BORDER);
+                pt.addCell(cell);
+
+                cell = new PdfPCell(new Phrase(":", fsubheader));
+                cell.setBorder(Rectangle.NO_BORDER);
+                pt.addCell(cell);
+
+                cell = new PdfPCell(new Phrase(project, f));
+                cell.setBorder(Rectangle.NO_BORDER);
+                pt.addCell(cell);
+
+                cell = new PdfPCell(new Phrase("Ruangan", fsubheader));
+                cell.setBorder(Rectangle.NO_BORDER);
+                pt.addCell(cell);
+
+                cell = new PdfPCell(new Phrase(":", fsubheader));
+                cell.setBorder(Rectangle.NO_BORDER);
+                pt.addCell(cell);
+
+                cell = new PdfPCell(new Phrase(bangunan, f));
+                cell.setBorder(Rectangle.NO_BORDER);
+                pt.addCell(cell);
+
+                pTable = new PdfPTable(1);
+                pTable.setWidthPercentage(100);
+                cell = new PdfPCell();
+                cell.setColspan(1);
+                cell.addElement(pt);
+                cell.setBorder(Rectangle.NO_BORDER);
+                pTable.addCell(cell);
+
+                cell = new PdfPCell(new Phrase(" ", f));
+                cell.setColspan(4);
+                cell.setBorder(Rectangle.NO_BORDER);
+                table.addCell(cell);
+
+                cell = new PdfPCell();
+                cell.setColspan(4);
+                cell.addElement(pTable);
+                cell.setBorder(Rectangle.NO_BORDER);
+                table.addCell(cell);
+
+                cell = new PdfPCell(new Phrase("Nama Item", fsubheader));
+                cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                table.addCell(cell);
+
+                cell = new PdfPCell(new Phrase("Jumlah Order", fsubheader));
+                cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                table.addCell(cell);
+
+                cell = new PdfPCell(new Phrase("Jumlah Kirim", fsubheader));
+                cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                table.addCell(cell);
+
+                cell = new PdfPCell(new Phrase("Keterangan", fsubheader));
+                cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                table.addCell(cell);
+
+                if(!data.equals("")){
+                    String[] pieces = data.trim().split("\\|");
+                    for(int i=0 ; i < pieces.length ; i++){
+                        String string = pieces[i];
+                        String[] parts = string.trim().split("\\~");
+
+                        cell = new PdfPCell(new Phrase(parts[6], f));
+                        table.addCell(cell);
+
+                        cell = new PdfPCell(new Phrase(parts[4], f));
+                        table.addCell(cell);
+
+                        cell = new PdfPCell(new Phrase(parts[1], f));
+                        table.addCell(cell);
+
+                        String keterangan = parts[5];
+                        if(keterangan.equals("0")) keterangan = " ";
+
+                        cell = new PdfPCell(new Phrase(keterangan, f));
+                        table.addCell(cell);
+
+                    }
+                }
+                PdfPTable pt1 = new PdfPTable(3);
+                pt1.setWidthPercentage(100);
+                float[] fl1 = new float[]{20, 20, 60};
+                pt1.setWidths(fl1);
+
+                cell = new PdfPCell(new Phrase("Pembuat,", f));
+                cell.setBorder(Rectangle.NO_BORDER);
+                pt1.addCell(cell);
+
+                cell = new PdfPCell(new Phrase("Mengetahui,", f));
+                cell.setBorder(Rectangle.NO_BORDER);
+                pt1.addCell(cell);
+
+                cell = new PdfPCell();
+                cell.setBorder(Rectangle.NO_BORDER);
+                pt1.addCell(cell);
+
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                mView.mBitmap.compress(Bitmap.CompressFormat.PNG, 100 , stream);
+
+                Image myImg = Image.getInstance(stream.toByteArray());
+                bgImage = Image.getInstance(myImg);
+                bgImage.setAbsolutePosition(330f, 642f);
+
+                cell = new PdfPCell();
+                cell.setBorder(Rectangle.NO_BORDER);
+                cell.setHorizontalAlignment(PdfPCell.ALIGN_RIGHT);
+                cell.addElement(bgImage);
+                pt1.addCell(cell);
+
+                cell = new PdfPCell();
+                cell.setBorder(Rectangle.NO_BORDER);
+                pt1.addCell(cell);
+
+                cell = new PdfPCell();
+                cell.setBorder(Rectangle.NO_BORDER);
+                pt1.addCell(cell);
+
+                cell = new PdfPCell(new Phrase(signname, fheader));
+                cell.setBorder(Rectangle.NO_BORDER);
+                cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                pt1.addCell(cell);
+
+                cell = new PdfPCell(new Phrase("__________", fheader));
+                cell.setBorder(Rectangle.NO_BORDER);
+                cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                pt1.addCell(cell);
+
+                cell = new PdfPCell();
+                cell.setBorder(Rectangle.NO_BORDER);
+                pt1.addCell(cell);
+
+                pTable = new PdfPTable(1);
+                pTable.setWidthPercentage(100);
+                cell = new PdfPCell();
+                cell.setColspan(1);
+                cell.addElement(pt1);
+                cell.setBorder(Rectangle.NO_BORDER);
+                pTable.addCell(cell);
+
+                cell = new PdfPCell();
+                cell.setColspan(4);
+                cell.addElement(pTable);
+                cell.setBorder(Rectangle.NO_BORDER);
+                table.addCell(cell);
+
+                doc.add(table);
+
+                Toast.makeText(getContext(), "created PDF", Toast.LENGTH_LONG).show();
+                uploadpdf(file);
+            } catch (DocumentException de) {
+                Log.e("PDFCreator", "DocumentException:" + de);
+            } finally {
+                doc.close();
+
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+//                fm.popBackStack(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                Index.fm.popBackStack(Index.fm.getBackStackEntryCount()-3, 0);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void displaypdf(File pdf) {
 
         File file = pdf;
@@ -459,6 +751,10 @@ public class Sign extends Fragment {
         }
         else
             Toast.makeText(getContext(), "File path is incorrect." , Toast.LENGTH_LONG).show();
+    }
+
+    public void uploadpdf(File pdf) {
+        new doPDFUpload().execute(pdf.getPath());
     }
 
     public void sendpdf(File pdf) {
@@ -606,6 +902,7 @@ public class Sign extends Fragment {
                 Index.jsonObject.put("tanggal", date);
                 Index.jsonObject.put("nomor_thDO", Index.globalfunction.getShared("global", "thdeliveryordernow", "0"));
                 Index.jsonObject.put("dataBPM", Index.globalfunction.getShared("global", "detailbpmbaru", ""));
+                Index.jsonObject.put("photo", Index.globalfunction.getShared("global", "bpmphoto", ""));
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -626,7 +923,24 @@ public class Sign extends Fragment {
                         if(obj.has("success")){
                             hideLoading();
                             Toast.makeText(getContext(), "Create BPM Success", Toast.LENGTH_LONG).show();
-                            Index.fm.popBackStack(Index.fm.getBackStackEntryCount()-3, 0);
+                            String kode = obj.getString("kode");
+                            String tanggal = obj.getString("tanggal");
+                            String bangunan = obj.getString("bangunan");
+                            String project = obj.getString("project");
+
+                            Index.globalfunction.setShared("global", "print_kode", kode);
+                            Index.globalfunction.setShared("global", "print_tanggal", tanggal);
+                            Index.globalfunction.setShared("global", "print_bangunan", bangunan);
+                            Index.globalfunction.setShared("global", "print_project", project);
+                            Index.globalfunction.setShared("global", "print_data", Index.globalfunction.getShared("global", "detailbpmbaru", ""));
+
+                            try {
+                                createPDFBpm();
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            } catch (DocumentException e) {
+                                e.printStackTrace();
+                            }
                         }
                         else
                         {

@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorWhite">
+    android:background="@color/colorWhite"
+    >
 
     <ScrollView
         android:layout_height="match_parent"
@@ -19,10 +20,19 @@
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:id="@+id/iv_logo"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
                 android:layout_marginTop="50dp"
-                android:src="@drawable/logo" />
+                android:src="@drawable/logo"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/iv_logo"
+                android:text="ver 1.0.17"
+                android:layout_marginBottom="-50dp"
+                android:textAlignment="center"
+                android:textColor="@color/colorGray"/>
 
             <Button
                 android:layout_width="300dp"
@@ -82,6 +92,4 @@
 
         </RelativeLayout>
     </ScrollView>
-
-
 </RelativeLayout>

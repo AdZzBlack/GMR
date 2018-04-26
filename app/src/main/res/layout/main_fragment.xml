@@ -21,5 +21,16 @@
             android:id="@+id/imageView"
             android:scaleType="fitXY"
             android:adjustViewBounds="true"/>
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/imageView"
+            android:textColor="@color/colorGray"
+            android:id="@+id/lv_detail"
+            android:choiceMode="singleChoice"
+            android:listSelector="@android:color/darker_gray"
+            />
+
     </RelativeLayout>
 </RelativeLayout>

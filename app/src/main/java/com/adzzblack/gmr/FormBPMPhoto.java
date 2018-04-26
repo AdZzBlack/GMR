@@ -1,6 +1,5 @@
 package com.adzzblack.gmr;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,14 +12,12 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.FloatMath;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -31,7 +28,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -39,13 +35,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static android.support.v7.widget.StaggeredGridLayoutManager.TAG;
-
-public class BeritaAcara extends Fragment implements View.OnClickListener {
+public class FormBPMPhoto extends Fragment implements View.OnClickListener {
 
     private ImageButton ib_camera;
-    private EditText et_keterangan, et_ffl;
-    private Button btn_changeimage, btn_selectfromfile, btn_send;
+    private Button btn_changeimage, btn_selectfromfile, btn_back, btn_next;
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int PICK_IMAGE_REQUEST = 3;
@@ -82,46 +75,41 @@ public class BeritaAcara extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.beritaacara, container, false);
-        getActivity().setTitle("Berita Acara");
+        View v = inflater.inflate(R.layout.form_photobpm, container, false);
+        getActivity().setTitle("Surat Jalan");
 
         ib_camera = (ImageButton) v.findViewById(R.id.ib_camera);
-        et_keterangan = (EditText) v.findViewById(R.id.et_keterangan);
-        et_ffl = (EditText) v.findViewById(R.id.et_ffl);
         mImageView = (ImageView) v.findViewById(R.id.imageView);
         btn_changeimage = (Button) v.findViewById(R.id.btn_changeimage);
         btn_selectfromfile = (Button) v.findViewById(R.id.btn_selectfromfile);
-        btn_send = (Button) v.findViewById(R.id.btn_send);
-
-        et_keterangan.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-
-                return false;
-            }
-        });
-
-        et_ffl.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-
-                return false;
-            }
-        });
+        btn_back = (Button) v.findViewById(R.id.btn_back);
+        btn_next = (Button) v.findViewById(R.id.btn_next);
 
         ib_camera.setOnClickListener(this);
         btn_changeimage.setOnClickListener(this);
         btn_selectfromfile.setOnClickListener(this);
-        btn_send.setOnClickListener(this);
-        et_keterangan.setOnClickListener(this);
+        btn_back.setOnClickListener(this);
+        btn_next.setOnClickListener(this);
 
         mImageView.setImageResource(0);
         mImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         mImageView.setOnClickListener(this);
+
+
+        try {
+            if(!Index.globalfunction.getShared("global", "bpmpath", "").equals(""))
+            {
+                mCurrentPhotoPathRaw = Index.globalfunction.getShared("global", "bpmpathraw", "");
+                mCurrentPhotoPath = Index.globalfunction.getShared("global", "bpmpath", "");
+                mCurrentPhotoName = Index.globalfunction.getShared("global", "bpmphoto", "");
+                mImageBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), Uri.parse(mCurrentPhotoPath));
+                mImageView.setImageBitmap(mImageBitmap);
+                ib_camera.setVisibility(View.INVISIBLE);
+                btn_changeimage.setVisibility(View.VISIBLE);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return v;
     }
@@ -152,31 +140,18 @@ public class BeritaAcara extends Fragment implements View.OnClickListener {
                 }
             }
         }
-        else if(v.getId() == R.id.btn_send){
-            if(mCurrentPhotoName.equals(""))
-            {
-                Toast.makeText(getContext(), "Photo is empty", Toast.LENGTH_LONG).show();
-            }
-            else
-            {
-                if(et_keterangan.getText().toString().equals(""))
-                {
-                    Toast.makeText(getContext(), "Keterangan is empty", Toast.LENGTH_LONG).show();
-                }
-                else
-                {
-                    if(et_ffl.getText().toString().equals(""))
-                    {
-                        Toast.makeText(getContext(), "FFL is empty", Toast.LENGTH_LONG).show();
-                    }
-                    else
-                    {
-                        new doFileUpload().execute(decodeFile(mCurrentPhotoPathRaw, 1920, 1080));
-                        String actionUrl = "BeritaAcara/createBeritaAcara/";
-                        new createBerita().execute( actionUrl );
-                    }
-                }
-            }
+        else if(v.getId() == R.id.btn_back){
+            Index.fm.popBackStack();
+        }
+        else if(v.getId() == R.id.btn_next){
+            Index.globalfunction.setShared("global", "bpmpathraw", mCurrentPhotoPathRaw);
+            Index.globalfunction.setShared("global", "bpmpath", mCurrentPhotoPath);
+            Index.globalfunction.setShared("global", "bpmphoto", mCurrentPhotoName);
+            Fragment fragment = new Sign();
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
         }
         else if(v.getId() == R.id.btn_selectfromfile){
             Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -369,66 +344,6 @@ public class BeritaAcara extends Fragment implements View.OnClickListener {
         }
         return strMyImagePath;
 
-    }
-
-    private class createBerita extends AsyncTask<String, Void, String> {
-        String keterangan = et_keterangan.getText().toString();
-        String ffl = et_ffl.getText().toString();
-
-        @Override
-        protected String doInBackground(String... urls) {
-            try {
-                Index.jsonObject = new JSONObject();
-                Index.jsonObject.put("user", Index.globalfunction.getShared("user", "nomor", "0"));
-                Index.jsonObject.put("bangunan_nomor", Index.globalfunction.getShared("bangunan", "nomorNow", "0"));
-                Index.jsonObject.put("bangunan_kode", Index.globalfunction.getShared("bangunan", "kodeNow", "0"));
-                Index.jsonObject.put("keterangan", keterangan);
-                Index.jsonObject.put("ffl", ffl);
-                Index.jsonObject.put("gambar", mCurrentPhotoName);
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-            return Index.globalfunction.executePost(urls[0], Index.jsonObject);
-        }
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            Log.d("result", result);
-            try {
-                JSONArray jsonarray = new JSONArray(result);
-                if(jsonarray.length() > 0){
-                    for (int i = 0; i < jsonarray.length(); i++) {
-                        JSONObject obj = jsonarray.getJSONObject(i);
-                        if(obj.has("success")){
-                            if(obj.getString("success").equals("true"))
-                            {
-                                hideLoading();
-                                Toast.makeText(getContext(), "Send Success", Toast.LENGTH_LONG).show();
-                                Index.fm.popBackStack(Index.fm.getBackStackEntryCount()-2, 0);
-                            }
-                            else
-                            {
-                                hideLoading();
-                                Toast.makeText(getContext(), "Send Failed", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    }
-                }
-            }catch(Exception e)
-            {
-                e.printStackTrace();
-                Toast.makeText(getContext(), "Building Load Failed", Toast.LENGTH_LONG).show();
-                hideLoading();
-            }
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            showLoading();
-        }
     }
 
     private void hideLoading()

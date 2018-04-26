@@ -3,20 +3,15 @@ package com.adzzblack.gmr;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -121,6 +116,7 @@ public class ChooseBangunan extends Fragment implements View.OnClickListener {
             try {
                 Index.jsonObject = new JSONObject();
                 Index.jsonObject.put("nomor_header", Index.globalfunction.getShared("bangunan", "header", "0"));
+                Index.jsonObject.put("cabang", Index.globalfunction.getShared("user", "cabang", "0"));
                 Index.jsonObject.put("search", search);
                 if(Index.globalfunction.getShared("global", "destination", "").equals("delivery") || Index.globalfunction.getShared("global", "destination", "").equals("opname"))
                 {
@@ -327,7 +323,20 @@ public class ChooseBangunan extends Fragment implements View.OnClickListener {
                         }
                         else if(Index.globalfunction.getShared("global", "destination", "").equals("bpm"))
                         {
+                            Index.globalfunction.setShared("global", "detailbpmbaru", "");
+                            Index.globalfunction.setShared("global", "bpmpathraw", "");
+                            Index.globalfunction.setShared("global", "bpmpath", "");
+                            Index.globalfunction.setShared("global", "bpmphoto", "");
+
                             Fragment fragment = new ChooseDeliveryOrder();
+                            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                            transaction.replace(R.id.fragment_container, fragment);
+                            transaction.addToBackStack(null);
+                            transaction.commit();
+                        }
+                        else if(Index.globalfunction.getShared("global", "destination", "").equals("listbpm"))
+                        {
+                            Fragment fragment = new List_BPM();
                             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                             transaction.replace(R.id.fragment_container, fragment);
                             transaction.addToBackStack(null);
@@ -383,6 +392,19 @@ public class ChooseBangunan extends Fragment implements View.OnClickListener {
                         transaction.replace(R.id.fragment_container, fragment);
                         transaction.addToBackStack(null);
                         transaction.commit();
+                    }
+                    else if(Index.globalfunction.getShared("global", "destination", "").equals("file"))
+                    {
+                        Index.globalfunction.setShared("bangunan", "before", Index.globalfunction.getShared("bangunan", "before", "0") + Index.globalfunction.getShared("bangunan", "header", "0") + ",");
+                        Index.globalfunction.setShared("bangunan", "nomorNow", finalHolder.adapterItem.getNomor());
+                        Index.globalfunction.setShared("bangunan", "kodeNow", finalHolder.adapterItem.getKode());
+                        Index.globalfunction.setShared("bangunan", "namaNow", finalHolder.adapterItem.getNama());
+
+//                        Fragment fragment = new ChoosePrintDelivery();
+//                        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+//                        transaction.replace(R.id.fragment_container, fragment);
+//                        transaction.addToBackStack(null);
+//                        transaction.commit();
                     }
                     else if(finalHolder.adapterItem.getStatusAnak().equals("1"))
                     {

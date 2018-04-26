@@ -42,7 +42,14 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         globalfunction = new GlobalFunction(this);
 
         globalfunction.setShared("server", "servernow", "gmr.inspiraworld.com");
-//        globalfunction.setShared("server", "servernow", "117.102.229.10:99");
+
+        //Permission
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                //Request Location Permission
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            }
+        }
 
         et_username = (EditText) findViewById(R.id.et_username);
         et_password = (EditText) findViewById(R.id.et_password);
@@ -63,7 +70,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             et_password.setVisibility(View.INVISIBLE);
             btn_login.setVisibility(View.INVISIBLE);
 
-            Log.d("hash", user_hash+"a");
+            Log.d("hash", user_hash + user_name + user_role +"a");
             String actionUrl = "Login/checkLogin/";
             new checkLogin().execute( actionUrl );
         }
@@ -75,6 +82,39 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         if(v.getId() == R.id.btn_login){
             String actionUrl = "Login/loginUser/";
             new loginUser().execute( actionUrl );
+        }
+    }
+
+    private void setData(JSONObject obj)
+    {
+        try
+        {
+            globalfunction.setShared("user", "username", obj.getString("user_id"));
+            globalfunction.setShared("user", "id", obj.getString("user_id"));
+            globalfunction.setShared("user", "nomor", obj.getString("user_nomor"));
+            globalfunction.setShared("user", "nama", obj.getString("user_nama"));
+            globalfunction.setShared("user", "role", obj.getString("user_role"));
+            globalfunction.setShared("user", "hash", obj.getString("user_hash"));
+            globalfunction.setShared("user", "cabang", obj.getString("user_cabang"));
+            globalfunction.setShared("user", "role_beritaacara", obj.getString("role_beritaacara"));
+            globalfunction.setShared("user", "role_approveberitaacara", obj.getString("role_approveberitaacara"));
+            globalfunction.setShared("user", "role_deliveryorder", obj.getString("role_deliveryorder"));
+            globalfunction.setShared("user", "role_approvedeliveryorder", obj.getString("role_approvedeliveryorder"));
+            globalfunction.setShared("user", "role_bpm", obj.getString("role_bpm"));
+            globalfunction.setShared("user", "role_opname", obj.getString("role_opname"));
+            globalfunction.setShared("user", "role_viewnotabeli", obj.getString("role_viewnotabeli"));
+            globalfunction.setShared("user", "role_notabeli", obj.getString("role_notabeli"));
+            globalfunction.setShared("user", "role_map", obj.getString("role_map"));
+            globalfunction.setShared("user", "role_pasang", obj.getString("role_pasang"));
+            globalfunction.setShared("user", "role_crossbranch", obj.getString("role_crossbranch"));
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            et_username.setVisibility(View.VISIBLE);
+            et_password.setVisibility(View.VISIBLE);
+            btn_login.setVisibility(View.VISIBLE);
+//            Toast.makeText(getBaseContext(), "Login Failed", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -102,15 +142,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                         JSONObject obj = jsonarray.getJSONObject(i);
                         String success = obj.getString("success");
                         if(success.equals("true")){
-                            globalfunction.setShared("user", "role_beritaacara", obj.getString("role_beritaacara"));
-                            globalfunction.setShared("user", "role_approveberitaacara", obj.getString("role_approveberitaacara"));
-                            globalfunction.setShared("user", "role_deliveryorder", obj.getString("role_deliveryorder"));
-                            globalfunction.setShared("user", "role_approvedeliveryorder", obj.getString("role_approvedeliveryorder"));
-                            globalfunction.setShared("user", "role_bpm", obj.getString("role_bpm"));
-                            globalfunction.setShared("user", "role_opname", obj.getString("role_opname"));
-                            globalfunction.setShared("user", "role_notabeli", obj.getString("role_notabeli"));
-                            globalfunction.setShared("user", "role_map", obj.getString("role_map"));
-                            globalfunction.setShared("user", "role_pasang", obj.getString("role_pasang"));
+                            setData(obj);
 
                             Intent intent = new Intent(Login.this, Index.class);
                             startActivity(intent);
@@ -164,21 +196,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                     for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
-                            globalfunction.setShared("user", "username", username);
-                            globalfunction.setShared("user", "id", obj.getString("user_id"));
-                            globalfunction.setShared("user", "nomor", obj.getString("user_nomor"));
-                            globalfunction.setShared("user", "nama", obj.getString("user_nama"));
-                            globalfunction.setShared("user", "role", obj.getString("user_role"));
-                            globalfunction.setShared("user", "hash", obj.getString("user_hash"));
-                            globalfunction.setShared("user", "role_beritaacara", obj.getString("role_beritaacara"));
-                            globalfunction.setShared("user", "role_approveberitaacara", obj.getString("role_approveberitaacara"));
-                            globalfunction.setShared("user", "role_deliveryorder", obj.getString("role_deliveryorder"));
-                            globalfunction.setShared("user", "role_approvedeliveryorder", obj.getString("role_approvedeliveryorder"));
-                            globalfunction.setShared("user", "role_bpm", obj.getString("role_bpm"));
-                            globalfunction.setShared("user", "role_opname", obj.getString("role_opname"));
-                            globalfunction.setShared("user", "role_notabeli", obj.getString("role_notabeli"));
-                            globalfunction.setShared("user", "role_map", obj.getString("role_map"));
-                            globalfunction.setShared("user", "role_pasang", obj.getString("role_pasang"));
+                            setData(obj);
 
                             hideLoading();
 

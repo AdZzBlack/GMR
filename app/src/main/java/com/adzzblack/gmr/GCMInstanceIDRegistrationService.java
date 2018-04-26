@@ -39,7 +39,7 @@ public class GCMInstanceIDRegistrationService extends IntentService {
     private void updateGCM(){
         try {
             Index.jsonObject = new JSONObject();
-            Index.jsonObject.put("user_nomor", Index.globalfunction.getShared("user", "id", "0"));
+            Index.jsonObject.put("user_nomor", Index.globalfunction.getShared("user", "nomor", "0"));
             Index.jsonObject.put("gcmid", token);
         } catch (JSONException e) {
             // TODO Auto-generated catch block
