@@ -31,15 +31,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import static android.support.v7.widget.StaggeredGridLayoutManager.TAG;
 
 public class BeritaAcara extends Fragment implements View.OnClickListener {
 

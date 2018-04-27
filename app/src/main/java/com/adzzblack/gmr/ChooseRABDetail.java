@@ -97,6 +97,7 @@ public class ChooseRABDetail extends Fragment implements View.OnClickListener {
             try {
                 Index.jsonObject = new JSONObject();
                 Index.jsonObject.put("nomor_rab", Index.globalfunction.getShared("rab", "rab", "0"));
+                Index.jsonObject.put("nomor_bangunan", Index.globalfunction.getShared("bangunan", "nomorNow", ""));
                 Index.jsonObject.put("search", search);
             } catch (JSONException e) {
                 // TODO Auto-generated catch block

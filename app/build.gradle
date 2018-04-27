@@ -1,14 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '25.0.2'
+    compileSdkVersion 27
     defaultConfig {
         applicationId "com.adzzblack.gmr"
         minSdkVersion 14
-        targetSdkVersion 23
+        targetSdkVersion 27
         versionCode 1
-        versionName "1.0.22"
+        versionName "1.0.23"
         multiDexEnabled true
     }
     buildTypes {
@@ -30,16 +29,19 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.android.support:multidex:1.0.0'
-    compile 'com.android.support:design:23.4.0'
-    compile 'com.google.android.gms:play-services:8.4.0'
-    compile files('libs/httpcore-4.4.1.jar')
-    compile files('libs/httpclient-4.5.jar')
-    compile files('libs/itextpdf-5.1.0.jar')
-    testCompile 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:mediarouter-v7:27.1.1'
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.google.android.gms:play-services:12.0.1'
+//    implementation 'com.google.android.gms:play-services-gcm:15.0.0'
+//    implementation 'com.google.firebase:firebase-appindexing:15.0.0'
+    implementation files('libs/httpcore-4.4.1.jar')
+    implementation files('libs/httpclient-4.5.jar')
+    implementation files('libs/itextpdf-5.1.0.jar')
+    testImplementation 'junit:junit:4.12'
 }
