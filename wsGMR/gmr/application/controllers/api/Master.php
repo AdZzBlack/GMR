@@ -250,7 +250,7 @@ class Master extends REST_Controller {
         }
     }
 	
-	function alldatarabWithCheck_post(){     
+	function alldatarabWithCheck_post(){
         $data['data'] = array();
 
         $value = file_get_contents('php://input');
@@ -278,7 +278,7 @@ class Master extends REST_Controller {
 				array_push($data['data'], array(
 												'nomor'    			=> $r['nomor'], 
 												'nama'       		=> $r['nama'],
-												'keterangan'       		=> $keterangan,
+												'keterangan'       	=> $keterangan
 												)
 				);
             }
