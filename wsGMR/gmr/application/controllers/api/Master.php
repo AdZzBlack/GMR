@@ -221,7 +221,10 @@ class Master extends REST_Controller {
         if($intNomorMBangunan != ""){ $intNomorMBangunan = " AND a.nomormhbangunan = " . $intNomorMBangunan; }
 		
         $search = (isset($jsonObject["search"]) ? $this->clean($jsonObject["search"]) : "");
-        if($search != ""){ $search = " AND (a.keterangan LIKE '%$search%') "; }
+        //remarked by Tonny, menambahkan search untuk nama barang
+        //if($search != ""){ $search = " AND (a.keterangan LIKE '%$search%') "; }
+
+        if($search != ""){ $search = " AND (a.keterangan LIKE '%$search%' OR b.nama LIKE '%$search%') "; }
 
 		$query = "  SELECT  
 						a.nomor AS nomor,

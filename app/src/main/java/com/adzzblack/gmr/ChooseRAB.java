@@ -4,8 +4,11 @@ import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +36,7 @@ public class ChooseRAB extends Fragment implements View.OnClickListener {
     private ListView lv_choose;
 
     private String nomor;
+    private Boolean isTyping;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,6 +74,39 @@ public class ChooseRAB extends Fragment implements View.OnClickListener {
                 transaction.replace(R.id.fragment_container, fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
+            }
+        });
+
+        isTyping = false;
+        final Handler handler = new Handler();
+        final Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                itemadapter.clear();
+                String actionUrl = "Master/alldatarab/";
+                new search().execute( actionUrl );
+            }
+        };
+        et_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                handler.removeCallbacks(myRunnable);
+                handler.removeCallbacksAndMessages(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                isTyping = false;
+                if(!et_search.getText().toString().trim().equals("") && !isTyping) {
+                    isTyping = true;
+                    handler.postDelayed(myRunnable, 2000);
+//                    LibInspira.setDelay(2000, myRunnable);
+                }
             }
         });
         //-----END DECLARE---------------------------------------------------------------------------------------
@@ -140,6 +177,7 @@ public class ChooseRAB extends Fragment implements View.OnClickListener {
                 Toast.makeText(getContext(), "RAB Load Failed", Toast.LENGTH_LONG).show();
                 hideLoading();
             }
+            isTyping = false;
         }
 
         @Override

@@ -124,9 +124,9 @@ public class GlobalFunction {
             HttpClient httpclient = new DefaultHttpClient();
             HttpParams httpParameters = httpclient.getParams();
 
-            //modified by Tonny @04-Jun-2018 connection timeout dijadikan 10 detik supaya data yg banyak bisa diretrieve
-            HttpConnectionParams.setConnectionTimeout(httpParameters, 10000);
-            HttpConnectionParams.setSoTimeout(httpParameters, 10000);
+            //modified by Tonny @04-Jun-2018 connection timeout dijadikan 30 detik supaya data yg banyak bisa diretrieve
+            HttpConnectionParams.setConnectionTimeout(httpParameters, 30000);
+            HttpConnectionParams.setSoTimeout(httpParameters, 30000);
 //            HttpConnectionParams.setConnectionTimeout(httpParameters, 3000);
 //            HttpConnectionParams.setSoTimeout(httpParameters, 3000);
             HttpConnectionParams.setTcpNoDelay(httpParameters, true);
