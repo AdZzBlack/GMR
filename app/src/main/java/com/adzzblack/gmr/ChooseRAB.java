@@ -1,6 +1,5 @@
 package com.adzzblack.gmr;
 
-import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,12 +7,12 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -25,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.nio.Buffer;
 import java.util.ArrayList;
 
 public class ChooseRAB extends Fragment implements View.OnClickListener {
@@ -36,7 +36,9 @@ public class ChooseRAB extends Fragment implements View.OnClickListener {
     private ListView lv_choose;
 
     private String nomor;
-    private Boolean isTyping;
+    private Boolean isTyping = false;
+    private Search search;
+    private final Handler handler = new Handler();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,14 +79,13 @@ public class ChooseRAB extends Fragment implements View.OnClickListener {
             }
         });
 
-        isTyping = false;
-        final Handler handler = new Handler();
         final Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
                 itemadapter.clear();
                 String actionUrl = "Master/alldatarab/";
-                new search().execute( actionUrl );
+                search = new Search();
+                search.execute( actionUrl );
             }
         };
         et_search.addTextChangedListener(new TextWatcher() {
@@ -105,14 +106,14 @@ public class ChooseRAB extends Fragment implements View.OnClickListener {
                 if(!et_search.getText().toString().trim().equals("") && !isTyping) {
                     isTyping = true;
                     handler.postDelayed(myRunnable, 2000);
-//                    LibInspira.setDelay(2000, myRunnable);
                 }
             }
         });
         //-----END DECLARE---------------------------------------------------------------------------------------
 
         String actionUrl = "Master/alldatarab/";
-        new search().execute( actionUrl );
+        search = new Search();
+        search.execute( actionUrl );
 
         return v;
     }
@@ -120,10 +121,13 @@ public class ChooseRAB extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         v.startAnimation(Index.buttoneffect);
         if(v.getId() == R.id.ib_search){
+            isTyping = true;
+            handler.removeCallbacksAndMessages(null);
             itemadapter.clear();
 
             String actionUrl = "Master/alldatarab/";
-            new search().execute( actionUrl );
+            search = new Search();
+            search.execute( actionUrl );
         }
     }
 
@@ -136,14 +140,20 @@ public class ChooseRAB extends Fragment implements View.OnClickListener {
         void onFragmentInteraction(Uri uri);
     }
 
-    private class search extends AsyncTask<String, Void, String> {
-        String search = et_search.getText().toString();
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(search != null) search.cancel(true);
+    }
+
+    private class Search extends AsyncTask<String, Void, String> {
+        String strSearch = et_search.getText().toString();
 
         @Override
         protected String doInBackground(String... urls) {
             try {
                 Index.jsonObject = new JSONObject();
-                Index.jsonObject.put("search", search);
+                Index.jsonObject.put("search", strSearch);
                 Index.jsonObject.put("nomor_bangunan", Index.globalfunction.getShared("bangunan", "nomorNow", ""));
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
@@ -163,19 +173,21 @@ public class ChooseRAB extends Fragment implements View.OnClickListener {
                         if(!obj.has("query")){
                             String nomor = (obj.getString("nomor"));
                             String nama = (obj.getString("nama"));
+                            String namamandor = (obj.getString("namamandor"));
+                            Log.wtf("query RAB ", obj.getString("querymessage"));
 
-                            itemadapter.add(new ItemAdapter(nomor, nama));
+                            itemadapter.add(new ItemAdapter(nomor, nama + "\n \n"
+                                    + Html.fromHtml("<font color=\"green\"> Mandor " + namamandor + "</font>")));
                             itemadapter.notifyDataSetChanged();
                         }
                     }
                 }
-
-                hideLoading();
             }catch(Exception e)
             {
                 e.printStackTrace();
                 Toast.makeText(getContext(), "RAB Load Failed", Toast.LENGTH_LONG).show();
-                hideLoading();
+            }finally {
+                LibInspira.hideLoading();
             }
             isTyping = false;
         }
@@ -183,21 +195,7 @@ public class ChooseRAB extends Fragment implements View.OnClickListener {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            showLoading();
+            LibInspira.showLoading(getContext(), "Getting data RAB", "Loading");
         }
-    }
-
-    private void hideLoading()
-    {
-        Index.loadingDialog.dismiss();
-    }
-
-    private void showLoading()
-    {
-        Index.loadingDialog = new ProgressDialog(getActivity());
-        Index.loadingDialog.setMessage("Loading");
-        Index.loadingDialog.setCancelable(true);
-        Index.loadingDialog.setCanceledOnTouchOutside(false);
-        Index.loadingDialog.show();
     }
 }

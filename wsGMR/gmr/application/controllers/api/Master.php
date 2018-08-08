@@ -228,9 +228,11 @@ class Master extends REST_Controller {
 
 		$query = "  SELECT  
 						a.nomor AS nomor,
-                        b.nama AS nama
+                        b.nama AS nama,
+                        c.nama AS namamandor
                     FROM mdrab a
-					JOIN mhpekerjaan b ON a.nomormhpekerjaan = b.nomor
+                        JOIN mhpekerjaan b ON a.nomormhpekerjaan = b.nomor
+                        JOIN mhmandor c ON a.nomormhmandor = c.nomor
 					WHERE 1 = 1
 					    AND a.status_aktif = 1 $intNomorMBangunan $search";
         $result = $this->db->query($query);
@@ -240,6 +242,8 @@ class Master extends REST_Controller {
 				array_push($data['data'], array(
 												'nomor'    			=> $r['nomor'], 
 												'nama'       		=> $r['nama'],
+												'namamandor'       	=> $r['namamandor'],
+												'querymessage'      => $query
 												)
 				);
             }

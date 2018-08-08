@@ -58,6 +58,6 @@ public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
 
     private void setupItem(Holder holder) {
         holder.nomor.setText(holder.adapterItem.getNomor());
-        holder.nama.setText(holder.adapterItem.getNama());
+        holder.nama.setText(holder.adapterItem.getNama(), TextView.BufferType.SPANNABLE);
     }
 }

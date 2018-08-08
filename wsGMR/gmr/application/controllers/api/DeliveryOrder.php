@@ -213,56 +213,128 @@ class DeliveryOrder extends REST_Controller {
 //                      'waste'     	=> $r['waste'],
 //                      'keterangan'	=> $r['keterangan'],
 
-		$query = "SELECT a.nomormhbarang AS nomorbarang,
-                    b.nama AS namabarang,
-                    c.nama AS satuan,
-                    e.nama as namapekerjaan,
-                    '' AS keterangan,
-                    a.harga,
-                    a.nomor,
-                    esr.jumlah AS volume_1,
-                    d.volume AS volume_2,
-                    (esr.jumlah * d.volume) AS jumlah_volume,
-                  CASE WHEN b.pengaruhelevasi=1
-                      THEN FC_GET_ELEVASI('$intNomorBangunan')
-                      ELSE 0
-                  END AS elevasi,
-                  CASE WHEN b.pengaruhelevasi=1
-                      THEN ((esr.jumlah * d.volume) * ((FC_GET_ELEVASI('$intNomorBangunan')-2)/3))
-                      ELSE (esr.jumlah * d.volume)
-                  END AS jumlah_elevasi,
-                  a.perkiraanpersenwaste AS waste,
-                  CASE WHEN b.pengaruhelevasi=1
-                      THEN ROUND(((esr.jumlah * d.volume) * ((FC_GET_ELEVASI('$intNomorBangunan')-2)/3)) + (((esr.jumlah * d.volume) * ((FC_GET_ELEVASI('$intNomorBangunan')-2)/3)) * a.perkiraanpersenwaste/100),3)
-                      ELSE ROUND((esr.jumlah * d.volume) + ((esr.jumlah * d.volume) * a.perkiraanpersenwaste/100),3)
-                  END AS jumlah,
-                  a.jumlahterorder AS do,
-                  CASE WHEN b.pengaruhelevasi=1
-                      THEN ((esr.jumlah * d.volume) * ((FC_GET_ELEVASI('$intNomorBangunan')-2)/3)) + (((esr.jumlah * d.volume) * ((FC_GET_ELEVASI('$intNomorBangunan')-2)/3)) * a.perkiraanpersenwaste/100) - a.jumlahterorder
-                      ELSE (esr.jumlah * d.volume) + ((esr.jumlah * d.volume) * a.perkiraanpersenwaste/100) - a.jumlahterorder
-                  END AS sisa,
-                  FC_CHECK_BARANG_VALIDITY(a.nomormhbarang,'$intNomorBangunan'),
-                  FC_CHECK_OPNAME_VALIDITY(d.nomor)
-                  FROM mdrabdetail a
-                  JOIN mhbarang b ON a.nomormhbarang=b.nomor
-                  JOIN mhsatuan c ON b.nomormhsatuan=c.nomor
-                  JOIN mdrab d ON a.nomormdrab=d.nomor AND d.nomor NOT IN (
-                      SELECT nomormdrab from thopname where progress=100
-                  )
-                  JOIN mhpekerjaan e ON d.nomormhpekerjaan=e.nomor
-                      JOIN mhsatuan es ON e.nomormhsatuan=es.nomor AND es.adarumus=1
-                      JOIN mdsatuan_rumus esr ON esr.nomormhsatuan = es.nomor AND esr.nomormhbarang = b.nomor
-                  WHERE a.status_aktif > 0 AND (b.prioritas<=IFNULL((
-                      SELECT MAX(d.prioritas)+1 FROM tdbpm a
-                      JOIN tddeliveryorder b ON b.nomor=a.nomortddeliveryorder
-                      JOIN thdeliveryorder c ON c.nomor=b.nomorthdeliveryorder
-                      JOIN mhbarang d ON a.nomormhbarang=d.nomor
-                      WHERE a.status_aktif>0 AND a.jumlahkirim>0 AND c.nomormhbangunan='$intNomorBangunan'),1))
-                  AND FC_CHECK_BARANG_VALIDITY(a.nomormhbarang,'$intNomorBangunan')='1'
-                  AND FC_CHECK_OPNAME_VALIDITY(d.nomor)='1'
-                  AND d.status_aktif=1
-                  AND d.nomormhbangunan='$intNomorBangunan'
-                  $filterNomorMRAB $search  ";
+//		$query = "SELECT a.nomormhbarang AS nomorbarang,
+//                    b.nama AS namabarang,
+//                    c.nama AS satuan,
+//                    e.nama as namapekerjaan,
+//                    '' AS keterangan,
+//                    a.harga,
+//                    a.nomor,
+//                    esr.jumlah AS volume_1,
+//                    d.volume AS volume_2,
+//                    (esr.jumlah * d.volume) AS jumlah_volume,
+//                  CASE WHEN b.pengaruhelevasi=1
+//                      THEN FC_GET_ELEVASI('$intNomorBangunan')
+//                      ELSE 0
+//                  END AS elevasi,
+//                  CASE WHEN b.pengaruhelevasi=1
+//                      THEN ((esr.jumlah * d.volume) * ((FC_GET_ELEVASI('$intNomorBangunan')-2)/3))
+//                      ELSE (esr.jumlah * d.volume)
+//                  END AS jumlah_elevasi,
+//                  a.perkiraanpersenwaste AS waste,
+//                  CASE WHEN b.pengaruhelevasi=1
+//                      THEN ROUND(((esr.jumlah * d.volume) * ((FC_GET_ELEVASI('$intNomorBangunan')-2)/3)) + (((esr.jumlah * d.volume) * ((FC_GET_ELEVASI('$intNomorBangunan')-2)/3)) * a.perkiraanpersenwaste/100),3)
+//                      ELSE ROUND((esr.jumlah * d.volume) + ((esr.jumlah * d.volume) * a.perkiraanpersenwaste/100),3)
+//                  END AS jumlah,
+//                  a.jumlahterorder AS do,
+//                  CASE WHEN b.pengaruhelevasi=1
+//                      THEN ((esr.jumlah * d.volume) * ((FC_GET_ELEVASI('$intNomorBangunan')-2)/3)) + (((esr.jumlah * d.volume) * ((FC_GET_ELEVASI('$intNomorBangunan')-2)/3)) * a.perkiraanpersenwaste/100) - a.jumlahterorder
+//                      ELSE (esr.jumlah * d.volume) + ((esr.jumlah * d.volume) * a.perkiraanpersenwaste/100) - a.jumlahterorder
+//                  END AS sisa,
+//                  FC_CHECK_BARANG_VALIDITY(a.nomormhbarang,'$intNomorBangunan'),
+//                  FC_CHECK_OPNAME_VALIDITY(d.nomor)
+//                  FROM mdrabdetail a
+//                  JOIN mhbarang b ON a.nomormhbarang=b.nomor
+//                  JOIN mhsatuan c ON b.nomormhsatuan=c.nomor
+//                  JOIN mdrab d ON a.nomormdrab=d.nomor AND d.nomor
+//                  NOT IN (
+//                      SELECT nomormdrab from thopname where progress=100
+//                  )
+//                  JOIN mhpekerjaan e ON d.nomormhpekerjaan=e.nomor
+//                      JOIN mhsatuan es ON e.nomormhsatuan=es.nomor AND es.adarumus=1
+//                      JOIN mdsatuan_rumus esr ON esr.nomormhsatuan = es.nomor AND esr.nomormhbarang = b.nomor
+//                  WHERE a.status_aktif > 0 AND (b.prioritas<=IFNULL((
+//                      SELECT MAX(d.prioritas)+1 FROM tdbpm a
+//                      JOIN tddeliveryorder b ON b.nomor=a.nomortddeliveryorder
+//                      JOIN thdeliveryorder c ON c.nomor=b.nomorthdeliveryorder
+//                      JOIN mhbarang d ON a.nomormhbarang=d.nomor
+//                      WHERE a.status_aktif>0 AND a.jumlahkirim>0 AND c.nomormhbangunan='$intNomorBangunan'),1))
+//                  AND FC_CHECK_BARANG_VALIDITY(a.nomormhbarang,'$intNomorBangunan')='1'
+//                  AND FC_CHECK_OPNAME_VALIDITY(d.nomor)='1'
+//                  AND d.status_aktif=1
+//                  AND d.nomormhbangunan='$intNomorBangunan'
+//                  $filterNomorMRAB $search  ";
+
+
+        $query = "SELECT
+                      *
+                  FROM
+                      (SELECT
+                          @elevasi:=FC_GET_ELEVASI('$intNomorBangunan') AS elevasi_bangunan,
+                              @curRow:=@curRow + 1 AS row_number,
+                              CASE
+                                  WHEN @curRow = 1 THEN @opname:=FC_CHECK_OPNAME_VALIDITY(d.nomor)
+                                  ELSE CASE
+                                      WHEN @temp_rab <> d.nomor THEN @opname:=FC_CHECK_OPNAME_VALIDITY(d.nomor)
+                                      ELSE @opname
+                                  END
+                              END AS opname_validity,
+                              FC_CHECK_BARANG_VALIDITY(a.nomormhbarang, '$intNomorBangunan') AS barang_validity,
+                              @temp_rab:=d.nomor AS nomormdrab,
+                              a.nomormhbarang AS nomorbarang,
+                              b.nama AS namabarang,
+                              c.nama AS satuan,
+                              e.nama AS namapekerjaan,
+                              '' AS keterangan,
+                              a.harga,
+                              a.nomor,
+                              esr.jumlah AS volume_1,
+                              d.volume AS volume_2,
+                              (esr.jumlah * d.volume) AS jumlah_volume,
+                              CASE
+                                  WHEN b.pengaruhelevasi = 1 THEN @elevasi
+                                  ELSE 0
+                              END AS elevasi,
+                              CASE
+                                  WHEN b.pengaruhelevasi = 1 THEN ((esr.jumlah * d.volume) * ((@elevasi - 2) / 3))
+                                  ELSE (esr.jumlah * d.volume)
+                              END AS jumlah_elevasi,
+                              a.perkiraanpersenwaste AS waste,
+                              a.jumlahterorder AS DO,
+                              CASE
+                                  WHEN b.pengaruhelevasi = 1 THEN ((esr.jumlah * d.volume) * ((@elevasi - 2) / 3)) + (((esr.jumlah * d.volume) * ((@elevasi - 2) / 3)) * a.perkiraanpersenwaste / 100) - a.jumlahterorder
+                                  ELSE (esr.jumlah * d.volume) + ((esr.jumlah * d.volume) * a.perkiraanpersenwaste / 100) - a.jumlahterorder
+                              END AS sisa
+                      FROM
+                          mdrabdetail a
+                      JOIN mhbarang b ON a.nomormhbarang = b.nomor
+                      JOIN mhsatuan c ON b.nomormhsatuan = c.nomor
+                      JOIN mdrab d ON a.nomormdrab = d.nomor
+                      JOIN mhpekerjaan e ON d.nomormhpekerjaan = e.nomor
+                      JOIN mhsatuan es ON e.nomormhsatuan = es.nomor
+                          AND es.adarumus = 1
+                      JOIN mdsatuan_rumus esr ON esr.nomormhsatuan = es.nomor
+                          AND esr.nomormhbarang = b.nomor
+                      JOIN (SELECT @curRow:=0) r
+                      WHERE
+                          a.status_aktif > 0
+                              AND (b.prioritas <= IFNULL((SELECT
+                                  MAX(d.prioritas) + 1
+                              FROM
+                                  tdbpm a
+                              JOIN tddeliveryorder b ON b.nomor = a.nomortddeliveryorder
+                              JOIN thdeliveryorder c ON c.nomor = b.nomorthdeliveryorder
+                              JOIN mhbarang d ON a.nomormhbarang = d.nomor
+                              WHERE
+                                  a.status_aktif > 0 AND a.jumlahkirim > 0
+                                      AND c.nomormhbangunan = '$intNomorBangunan'), 1))
+                              AND d.status_aktif = 1
+                              AND d.nomormhbangunan = '$intNomorBangunan'
+                              $filterNomorMRAB $search
+                              ) a
+                  WHERE
+                      a.opname_validity = 1
+                          AND a.barang_validity = 1 ";
         $result = $this->db->query($query);
 
         if( $result && $result->num_rows() > 0){
