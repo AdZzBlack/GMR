@@ -3,6 +3,8 @@ package com.adzzblack.gmr;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -14,11 +16,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ADI on 2/13/2017.
@@ -27,6 +37,7 @@ import org.json.JSONObject;
 public class Login extends AppCompatActivity implements View.OnClickListener{
 
     private EditText et_username, et_password;
+    private TextView tvVersion;
     private Button btn_login;
     private ProgressDialog loadingDialog;
     private String user_name, user_hash, user_role;
@@ -48,6 +59,18 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
             }
         }
+
+        //added by tonnymao @18-Jul-2018 supaya versi yg ditampilkan selalu update
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        String version = "v " + pInfo.versionName;
+
+        tvVersion = findViewById(R.id.tvVersion);
+        tvVersion.setText(version);
 
         et_username = (EditText) findViewById(R.id.et_username);
         et_password = (EditText) findViewById(R.id.et_password);
